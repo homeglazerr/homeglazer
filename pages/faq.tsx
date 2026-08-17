@@ -1,0 +1,59 @@
+import React from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { getOgImageUrl } from '@/lib/mediaUrl';
+import { JsonLd, FAQ_PAGE_JSON_LD } from '@/components/seo/JsonLd';
+import { faqItems } from '@/data/faq';
+import Header from '../src/components/home/Header';
+import Footer from '../src/components/home/Footer';
+import FAQ from '../src/components/home/FAQ';
+import WhatsAppButton from '../src/components/home/WhatsAppButton';
+import CallButton from '../src/components/home/CallButton';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://homeglazer.com';
+
+const FAQPage: React.FC = () => {
+  return (
+    <>
+      <Head>
+        <title>Frequently Asked Questions | HomeGlazer</title>
+        <meta name="description" content="Find answers to common questions about HomeGlazer's painting services, pricing, timelines, paint brands, warranties, and more." />
+        <meta property="og:title" content="Frequently Asked Questions | HomeGlazer" />
+        <meta property="og:description" content="Find answers to common questions about our painting services, pricing, timelines, and warranties." />
+        <meta property="og:image" content={getOgImageUrl("/uploads/hero-banner.png", SITE_URL)} />
+        <meta name="twitter:title" content="Frequently Asked Questions | HomeGlazer" />
+        <meta name="twitter:description" content="Find answers to common questions about our painting services." />
+        <meta name="twitter:image" content={getOgImageUrl("/uploads/hero-banner.png", SITE_URL)} />
+      </Head>
+      <JsonLd data={FAQ_PAGE_JSON_LD(faqItems)} />
+      <Header />
+      <main className="min-h-screen bg-gray-50 pt-12 pb-24">
+        <h1 className="text-[40px] font-medium text-center text-gray-900 px-4 mb-2">
+          Frequently asked questions about painting
+        </h1>
+        <p className="text-center text-[rgba(64,80,94,1)] text-lg font-light max-w-2xl mx-auto px-4 mb-4">
+          Pricing, timelines, brands, and how we work—answers from the HomeGlazer team.
+        </p>
+        <FAQ />
+      </main>
+      
+      {/* Mobile Action Buttons - Fixed at Bottom */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 z-50">
+        <div className="flex gap-3">
+          <Link href="/enquiry" className="flex-1 bg-[#ED276E] text-white py-3 px-3 rounded-lg font-medium text-center hover:bg-[#b81d5a] transition flex items-center justify-center text-[15px] whitespace-nowrap">
+            Enquire Now
+          </Link>
+          <Link href="/paint-budget-calculator" className="flex-1 bg-[#299dd7] text-white py-3 px-3 rounded-lg font-medium text-center hover:bg-[#237bb0] transition flex items-center justify-center text-[15px] whitespace-nowrap">
+            Budget Calculator
+          </Link>
+        </div>
+      </div>
+      
+      <Footer />
+      <CallButton />
+      <WhatsAppButton />
+    </>
+  );
+};
+
+export default FAQPage; 

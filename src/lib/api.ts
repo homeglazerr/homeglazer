@@ -1,0 +1,286 @@
+// API Client Utilities
+export interface ApiProduct {
+  id: string;
+  slug: string;
+  name: string;
+  brand: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  brandId: string;
+  description: string;
+  shortDescription: string;
+  category: string;
+  subCategory?: string | null;
+  sheenLevel: string;
+  surfaceType: string;
+  usage: string;
+  prices: Record<string, number>;
+  image: string;
+  colors?: string[];
+  features?: string[];
+  specifications?: Record<string, string>;
+}
+
+export interface ApiProductsResponse {
+  data: ApiProduct[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface ApiBrand {
+  id: string;
+  name: string;
+  slug: string;
+  logo: string;
+  description: string;
+}
+
+// Get the base URL for API calls
+// Priority: NEXT_PUBLIC_API_URL (for integration testing) > current origin (browser) > localhost (SSR fallback)
+function getApiBaseUrl(): string {
+  // Allow override via environment variable for integration testing
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // In browser, use current origin (works in both dev and production)
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  
+  // SSR fallback - use NEXT_PUBLIC_SITE_URL if available, otherwise localhost
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+}
+
+// Fetch products with pagination (single page)
+export async function fetchProducts(params?: {
+  brandId?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<ApiProduct[]> {
+  const baseUrl = getApiBaseUrl();
+  const url = new URL('/api/products', baseUrl);
+  if (params?.brandId) {
+    url.searchParams.append('brandId', params.brandId);
+  }
+  if (params?.search) {
+    url.searchParams.append('search', params.search);
+  }
+  // Use page 1 as default
+  const page = params?.page || 1;
+  url.searchParams.append('page', page.toString());
+  
+  // Use limit 50 as default to match API default
+  const limit = params?.limit || 50;
+  url.searchParams.append('limit', limit.toString());
+
+  let response;
+  try {
+    response = await fetch(url.toString());
+  } catch (fetchError: any) {
+    throw new Error(`Network error fetching products: ${fetchError?.message}`);
+  }
+
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    let errorData;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch (e) {
+      errorData = { rawResponse: responseText.substring(0, 1000) };
+    }
+    throw new Error(`Failed to fetch products: ${JSON.stringify(errorData)}`);
+  }
+
+  const parsedResponse: ApiProductsResponse | ApiProduct[] = JSON.parse(responseText);
+  
+  // Handle both old format (array) and new format (object with data and pagination)
+  if (Array.isArray(parsedResponse)) {
+    return parsedResponse;
+  } else {
+    return parsedResponse.data;
+  }
+}
+
+// Fetch ALL products by fetching all pages
+export async function fetchAllProducts(params?: {
+  brandId?: string;
+  search?: string;
+}): Promise<ApiProduct[]> {
+  const allProducts: ApiProduct[] = [];
+  let currentPage = 1;
+  let hasMorePages = true;
+  const pageSize = 50; // Fetch 50 products per request to match API default
+
+  console.log('[fetchAllProducts] Starting to fetch all products...');
+
+  while (hasMorePages) {
+    const baseUrl = getApiBaseUrl();
+    const url = new URL('/api/products', baseUrl);
+    
+    if (params?.brandId) {
+      url.searchParams.append('brandId', params.brandId);
+    }
+    if (params?.search) {
+      url.searchParams.append('search', params.search);
+    }
+    url.searchParams.append('page', currentPage.toString());
+    url.searchParams.append('limit', pageSize.toString());
+
+    console.log(`[fetchAllProducts] Fetching page ${currentPage}...`);
+
+    let response;
+    try {
+      response = await fetch(url.toString());
+    } catch (fetchError: any) {
+      throw new Error(`Network error fetching products (page ${currentPage}): ${fetchError?.message}`);
+    }
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch (e) {
+        errorData = { rawResponse: responseText.substring(0, 1000) };
+      }
+      throw new Error(`Failed to fetch products (page ${currentPage}): ${JSON.stringify(errorData)}`);
+    }
+
+    const parsedResponse: ApiProductsResponse | ApiProduct[] = JSON.parse(responseText);
+
+    // Handle both old format (array) and new format (object with data and pagination)
+    let products: ApiProduct[];
+    let hasNextPage = false;
+
+    if (Array.isArray(parsedResponse)) {
+      products = parsedResponse;
+      // Old format doesn't have pagination info, so stop after first page
+      hasNextPage = false;
+    } else {
+      products = parsedResponse.data;
+      hasNextPage = parsedResponse.pagination?.hasNextPage || false;
+    }
+
+    allProducts.push(...products);
+    console.log(`[fetchAllProducts] Fetched ${products.length} products (total: ${allProducts.length})`);
+
+    if (hasNextPage) {
+      currentPage++;
+    } else {
+      hasMorePages = false;
+    }
+  }
+
+  console.log(`[fetchAllProducts] Finished fetching all products. Total: ${allProducts.length}`);
+  return allProducts;
+}
+
+// Fetch all brands
+export async function fetchBrands(): Promise<ApiBrand[]> {
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}/api/brands`;
+
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (fetchError: any) {
+    throw new Error(`Network error fetching brands: ${fetchError?.message}`);
+  }
+
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    let errorData;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch (e) {
+      errorData = { rawResponse: responseText.substring(0, 1000) };
+    }
+    throw new Error(`Failed to fetch brands: ${JSON.stringify(errorData)}`);
+  }
+
+  return JSON.parse(responseText);
+}
+
+// Fetch a single product by ID
+export async function fetchProduct(id: string): Promise<ApiProduct> {
+  const response = await fetch(`/api/products/${id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch product');
+  }
+  return response.json();
+}
+
+// Transform API product to frontend Product format
+export function transformProduct(apiProduct: ApiProduct): Product {
+  return {
+    id: apiProduct.id,
+    slug: apiProduct.slug,
+    name: apiProduct.name,
+    brand: apiProduct.brand.name,
+    brandId: apiProduct.brand.slug,
+    description: apiProduct.description,
+    shortDescription: apiProduct.shortDescription,
+    category: apiProduct.category,
+    subCategory: apiProduct.subCategory,
+    sheenLevel: apiProduct.sheenLevel,
+    surfaceType: apiProduct.surfaceType,
+    usage: apiProduct.usage,
+    prices: apiProduct.prices,
+    image: apiProduct.image,
+    colors: apiProduct.colors,
+    features: apiProduct.features,
+    specifications: apiProduct.specifications,
+  };
+}
+
+// Frontend Product interface (matches the one in data/products.ts)
+export interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  brand: string;
+  brandId: string;
+  description: string;
+  shortDescription: string;
+  category: string;
+  subCategory?: string | null;
+  sheenLevel: string;
+  surfaceType: string;
+  usage: string;
+  prices: Record<string, number>;
+  image: string;
+  colors?: string[];
+  features?: string[];
+  specifications?: Record<string, string>;
+}
+
+// Transform API brand to frontend Brand format
+export interface Brand {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+}
+
+export function transformBrand(apiBrand: ApiBrand): Brand {
+  return {
+    id: apiBrand.slug,
+    name: apiBrand.name,
+    logo: apiBrand.logo,
+    description: apiBrand.description || '',
+  };
+}
+

@@ -1,0 +1,56 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.htm
+Disallow: /category/
+
+# GPTBot
+User-agent: GPTBot
+Allow: /
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Allow: /
+
+# Google-Extended
+User-agent: Google-Extended
+Allow: /
+
+# CCBot
+User-agent: CCBot
+Allow: /
+
+# anthropic-ai
+User-agent: anthropic-ai
+Allow: /
+
+# Bytespider
+User-agent: Bytespider
+Allow: /
+
+# Applebot-Extended
+User-agent: Applebot-Extended
+Allow: /
+
+# ClaudeBot
+User-agent: ClaudeBot
+Allow: /
+
+# PerplexityBot
+User-agent: PerplexityBot
+Allow: /
+
+# Applebot
+User-agent: Applebot
+Allow: /
+
+# DeepSeekBot
+User-agent: DeepSeekBot
+Allow: /
+
+# Host
+Host: https://homeglazer.com
+
+Sitemap: https://homeglazer.com/sitemap-index.xml

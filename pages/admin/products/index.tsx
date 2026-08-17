@@ -1,0 +1,210 @@
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import ProtectedRoute from '@/components/admin/ProtectedRoute';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { getMediaUrl } from '@/lib/mediaUrl';
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  image: string;
+  availableSizesText?: string | null;
+  availableSizesCompact?: string[] | null;
+  brand: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  category: string;
+  subCategory?: string | null;
+  sheenLevel: string;
+  prices: Record<string, number>;
+}
+
+export default function ProductsPage() {
+  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    fetchProducts();
+  }, [search]);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const url = search ? `/api/products?search=${encodeURIComponent(search)}` : '/api/products';
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        const rows = Array.isArray(data?.data) ? data.data : [];
+        setProducts(rows);
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        setError(`Failed to load products: ${errorData.error || errorData.message || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      setError(`Network error: ${err?.message || 'Failed to fetch products'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAvailableSizesLabel = (product: Product): string => {
+    if (Array.isArray(product.availableSizesCompact) && product.availableSizesCompact.length > 0) {
+      return `Available in ${product.availableSizesCompact.join(', ')}`;
+    }
+
+    const pricesObj =
+      product?.prices && typeof product.prices === 'object' && !Array.isArray(product.prices)
+        ? (product.prices as Record<string, unknown>)
+        : {};
+    const availableKeys = Object.keys(pricesObj)
+      .filter((k) => Boolean(pricesObj[k]))
+      .sort();
+
+    if (availableKeys.length > 0) {
+      return `Available in ${availableKeys.join(', ')}`;
+    }
+    return 'Contact for sizes';
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchProducts();
+      } else {
+        alert('Failed to delete product');
+      }
+    } catch (err) {
+      alert('Network error');
+    }
+  };
+
+  return (
+    <ProtectedRoute>
+      <AdminLayout>
+        <div>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold">Products</h1>
+            <Button
+              onClick={() => router.push('/admin/products/new')}
+              className="bg-[#299dd7] hover:bg-[#237bb0] text-white"
+            >
+              Add Product
+            </Button>
+          </div>
+
+          <div className="mb-6">
+            <Input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="max-w-md"
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+              {error}
+            </div>
+          )}
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#299dd7] mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading products...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
+              <div className="py-12 text-center">
+                <p className="text-gray-600">No products found. Create your first product!</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <div key={product.id} className="bg-white rounded-xl shadow p-6 border border-gray-200 flex flex-col">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold">
+                      {product.name}
+                    </h3>
+                  </div>
+                  {product.image && (
+                    <div className="mb-4">
+                      {(() => {
+                        const resolvedImageSrc = product.image.startsWith('http')
+                          ? product.image
+                          : getMediaUrl(product.image || '');
+                        return (
+                      <img 
+                        src={resolvedImageSrc} 
+                        alt={product.name}
+                        className="w-full h-48 object-contain bg-gray-50 rounded-lg border border-gray-200"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                        );
+                      })()}
+                    </div>
+                  )}
+                  <div className="space-y-2 flex-1">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Brand:</span> {product.brand?.name || 'Unknown'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Category:</span> {product.category}
+                      {product.subCategory && ` → ${product.subCategory}`}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Sheen:</span> {product.sheenLevel}
+                    </p>
+                    <div className="pt-2 border-t border-gray-200">
+                      <p className="text-xs font-medium text-gray-700 mb-1">Available sizes:</p>
+                      <p className="text-xs text-gray-500">{getAvailableSizesLabel(product)}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push(`/admin/products/${product.id}/edit`)}
+                      className="flex-1"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(product.id)}
+                      className="flex-1"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </AdminLayout>
+    </ProtectedRoute>
+  );
+}
+

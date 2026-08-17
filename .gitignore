@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+**/node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.production
+.env.*.local
+
+# Node.js binary distributions (should be installed system-wide)
+node-v*/
+*.tar.gz
+
+.next
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+/src/generated/prisma
+.vercel
+
+# Import script dry-run output (optional one-off JSON)
+scripts/import-output/
+
+# Scraped / one-off assets (not served by Next; keep out of repo)
+tmp/
+tmp_inline/
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/*.tfvars
+!terraform/*.tfvars.example
+
+# Cursor agent-generated markdown artifacts
+.cursor/plans/
+**/*.plan.md

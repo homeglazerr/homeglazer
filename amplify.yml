@@ -1,0 +1,71 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "ERROR: DATABASE_URL is not set. Add it in Amplify Console → Environment variables"
+            exit 1
+          fi
+        - npm ci
+    build:
+      commands:
+        # Write environment variables to .env.production for Next.js runtime access
+        # Amplify env vars are only available during build, not at runtime for SSR/API routes
+        - |
+          echo "Writing environment variables to .env.production..."
+          touch .env.production
+          # Server-side variables (for API routes and SSR)
+          [ -n "$DATABASE_URL" ] && echo "DATABASE_URL=$DATABASE_URL" >> .env.production
+          [ -n "$JWT_SECRET" ] && echo "JWT_SECRET=$JWT_SECRET" >> .env.production
+          [ -n "$CRYPTO_SECRET" ] && echo "CRYPTO_SECRET=$CRYPTO_SECRET" >> .env.production
+          [ -n "$GMAIL_USER" ] && echo "GMAIL_USER=$GMAIL_USER" >> .env.production
+          [ -n "$GMAIL_APP_PASSWORD" ] && echo "GMAIL_APP_PASSWORD=$GMAIL_APP_PASSWORD" >> .env.production
+          # Blog AI / LLM (server API routes — must be in this file for Amplify runtime)
+          [ -n "$GROK_API_KEY" ] && echo "GROK_API_KEY=$GROK_API_KEY" >> .env.production
+          # Legacy NVIDIA NIM / Moonshot (kept for fallback if GROK_API_KEY is not set)
+          [ -n "$NVIDIA_API_KEY" ] && echo "NVIDIA_API_KEY=$NVIDIA_API_KEY" >> .env.production
+          [ -n "$NVAPI_KEY" ] && echo "NVAPI_KEY=$NVAPI_KEY" >> .env.production
+          [ -n "$MOONSHOT_API_KEY" ] && echo "MOONSHOT_API_KEY=$MOONSHOT_API_KEY" >> .env.production
+          [ -n "$KIMI_API_KEY" ] && echo "KIMI_API_KEY=$KIMI_API_KEY" >> .env.production
+          [ -n "$KIMI_API_BASE" ] && echo "KIMI_API_BASE=$KIMI_API_BASE" >> .env.production
+          [ -n "$MOONSHOT_BASE_URL" ] && echo "MOONSHOT_BASE_URL=$MOONSHOT_BASE_URL" >> .env.production
+          [ -n "$NVIDIA_API_BASE" ] && echo "NVIDIA_API_BASE=$NVIDIA_API_BASE" >> .env.production
+          [ -n "$KIMI_MODEL" ] && echo "KIMI_MODEL=$KIMI_MODEL" >> .env.production
+          [ -n "$KIMI_FALLBACK_MODELS" ] && echo "KIMI_FALLBACK_MODELS=$KIMI_FALLBACK_MODELS" >> .env.production
+          [ -n "$GEMINI_API_KEY" ] && echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env.production
+          [ -n "$HUMANIZE_API_KEY" ] && echo "HUMANIZE_API_KEY=$HUMANIZE_API_KEY" >> .env.production
+          [ -n "$HUMANIZE_API_BASE" ] && echo "HUMANIZE_API_BASE=$HUMANIZE_API_BASE" >> .env.production
+          [ -n "$BLOG_AI_COVER_PLACEHOLDER" ] && echo "BLOG_AI_COVER_PLACEHOLDER=$BLOG_AI_COVER_PLACEHOLDER" >> .env.production
+          [ -n "$BLOG_AI_DEFAULT_AUTHOR" ] && echo "BLOG_AI_DEFAULT_AUTHOR=$BLOG_AI_DEFAULT_AUTHOR" >> .env.production
+          [ -n "$S3_BUCKET" ] && echo "S3_BUCKET=$S3_BUCKET" >> .env.production
+          [ -n "$S3_REGION" ] && echo "S3_REGION=$S3_REGION" >> .env.production
+          [ -n "$S3_ACCESS_KEY_ID" ] && echo "S3_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID" >> .env.production
+          [ -n "$S3_SECRET_ACCESS_KEY" ] && echo "S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY" >> .env.production
+          # Public variables (already available via NEXT_PUBLIC_ prefix)
+          [ -n "$NEXT_PUBLIC_SITE_URL" ] && echo "NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL" >> .env.production
+          [ -n "$NEXT_PUBLIC_S3_MEDIA_URL" ] && echo "NEXT_PUBLIC_S3_MEDIA_URL=$NEXT_PUBLIC_S3_MEDIA_URL" >> .env.production
+          echo "Environment variables written to .env.production"
+        # Upload uploads/, media/ to S3 before build (hero, budget calculator, etc.)
+        - npm run upload:media || echo "Skipping upload:media (S3_* not set or upload failed)"
+        - npm run build
+    postBuild:
+      commands:
+        # Reduce deployment size (Amplify 220MB limit). Products/uploads served from S3.
+        - rm -rf public/media/products public/uploads public/assets/Ai
+        # Room images: keep in deploy for visualiser final preview (S3 optional - set NEXT_PUBLIC_S3_MEDIA_URL to use S3)
+        # - rm -rf public/assets/images/bedroom public/assets/images/bathroom public/assets/images/kitchen public/assets/images/livingroom public/assets/images/homeoffice public/assets/images/kidsroom public/assets/images/office public/assets/images/outdoor public/assets/images/maingate
+        # Remove build-only deps not needed at runtime
+        - rm -rf node_modules/@swc node_modules/@esbuild node_modules/esbuild 2>/dev/null || true
+        - rm -rf .next/cache 2>/dev/null || true
+        # Remove devDependencies (typescript, tailwind, etc.) - saves ~100MB+
+        - npm prune --production
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
