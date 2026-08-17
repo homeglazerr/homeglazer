@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { canonicalSitemapBase } from '@/lib/sitemapBaseUrl';
 
-const DEFAULT_BASE = 'https://homeglazer.com';
+const DEFAULT_BASE = 'https://www.homeglazer.com';
 const PRODUCTION_HOSTS = ['homeglazer.com', 'www.homeglazer.com'];
 
 function getBaseUrlFromRequest(req: NextApiRequest): string | null {

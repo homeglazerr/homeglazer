@@ -7,7 +7,7 @@ import { getOgImageUrl } from '@/lib/mediaUrl';
 import { JsonLd, ORGANIZATION_JSON_LD } from '@/components/seo/JsonLd';
 import '../src/styles/tailwind.css';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://homeglazer.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.homeglazer.com';
 const DEFAULT_OG_IMAGE = getOgImageUrl('/uploads/hero-banner.png', SITE_URL);
 
 export default function App({ Component, pageProps }: AppProps) {

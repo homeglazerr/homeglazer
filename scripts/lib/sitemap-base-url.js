@@ -3,20 +3,23 @@
  * All generated <loc> URLs must use https://homeglazer.com (no www) for GSC.
  */
 
-const CANONICAL_ORIGIN = 'https://homeglazer.com';
+const CANONICAL_ORIGIN = 'https://www.homeglazer.com';
 
-/** Strip trailing slash and force apex for production host. */
+/** Strip trailing slash and force www for production host. */
 function apexHomeglazerBase(input) {
   const s = String(input || CANONICAL_ORIGIN)
     .trim()
     .replace(/\/$/, '');
-  return s.replace(/^https?:\/\/www\.homeglazer\.com(?::\d+)?/i, CANONICAL_ORIGIN);
+  if (/^https?:\/\/(www\.)?homeglazer\.com(?::\d+)?$/i.test(s)) {
+    return CANONICAL_ORIGIN;
+  }
+  return s;
 }
 
-/** Fix a full URL if it mistakenly used www (e.g. bad env at build time). */
+/** Fix a full URL if it mistakenly used non-www (e.g. bad env at build time). */
 function apexHomeglazerLoc(loc) {
   const s = String(loc || '');
-  return s.replace(/^https?:\/\/www\.homeglazer\.com(?::\d+)?/i, CANONICAL_ORIGIN);
+  return s.replace(/^https?:\/\/homeglazer\.com(?::\d+)?/i, CANONICAL_ORIGIN);
 }
 
 module.exports = {
