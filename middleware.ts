@@ -26,24 +26,17 @@ export function middleware(request: NextRequest) {
     ? forwardedProto.split(',')[0].trim().toLowerCase()
     : request.nextUrl.protocol.replace(':', '').toLowerCase();
 
-  // 1. Host normalization: www -> apex
-  let hostRedirectNeeded = false;
-  if (target.hostname === `www.${APEX_HOST}`) {
-    target.hostname = APEX_HOST;
-    hostRedirectNeeded = true;
-  }
-
-  // 2. HTTPS normalization: redirect http to https for production apex/www hosts
+  // 1. HTTPS normalization: redirect http to https for production hosts
   let protoRedirectNeeded = false;
   if (
     clientProto === 'http' &&
-    (target.hostname === APEX_HOST || target.hostname === `www.${APEX_HOST}`)
+    (target.hostname.includes(APEX_HOST))
   ) {
     target.protocol = 'https:';
     protoRedirectNeeded = true;
   }
 
-  // 3. Path normalization: strip trailing slashes & lowercase (unless skipped)
+  // 2. Path normalization: strip trailing slashes & lowercase (unless skipped)
   let pathRedirectNeeded = false;
   if (!skipPath) {
     let path = target.pathname;
@@ -57,7 +50,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const redirectNeeded = hostRedirectNeeded || protoRedirectNeeded || pathRedirectNeeded;
+  const redirectNeeded = protoRedirectNeeded || pathRedirectNeeded;
 
   if (redirectNeeded) {
     // Preserve https protocol on redirected targets if incoming request was https
