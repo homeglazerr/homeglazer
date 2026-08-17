@@ -20,29 +20,51 @@ export function middleware(request: NextRequest) {
   const skipPath = shouldSkipPathNormalization(request.nextUrl.pathname);
   const target = request.nextUrl.clone();
 
+  // Determine client protocol from x-forwarded-proto header (fallback to nextUrl.protocol)
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+  const clientProto = forwardedProto
+    ? forwardedProto.split(',')[0].trim().toLowerCase()
+    : request.nextUrl.protocol.replace(':', '').toLowerCase();
+
+  // 1. Host normalization: www -> apex
+  let hostRedirectNeeded = false;
   if (target.hostname === `www.${APEX_HOST}`) {
     target.hostname = APEX_HOST;
-  }
-  if (target.hostname === APEX_HOST && target.protocol !== 'https:') {
-    target.protocol = 'https:';
+    hostRedirectNeeded = true;
   }
 
+  // 2. HTTPS normalization: redirect http to https for production apex/www hosts
+  let protoRedirectNeeded = false;
+  if (
+    clientProto === 'http' &&
+    (target.hostname === APEX_HOST || target.hostname === `www.${APEX_HOST}`)
+  ) {
+    target.protocol = 'https:';
+    protoRedirectNeeded = true;
+  }
+
+  // 3. Path normalization: strip trailing slashes & lowercase (unless skipped)
+  let pathRedirectNeeded = false;
   if (!skipPath) {
     let path = target.pathname;
     if (path !== '/' && path.endsWith('/')) {
       path = path.slice(0, -1);
     }
-    target.pathname = path === '/' ? '/' : path.toLowerCase();
+    const lowerPath = path === '/' ? '/' : path.toLowerCase();
+    if (lowerPath !== request.nextUrl.pathname) {
+      target.pathname = lowerPath;
+      pathRedirectNeeded = true;
+    }
   }
 
-  const r = request.nextUrl;
-  const redirectNeeded =
-    target.hostname !== r.hostname ||
-    target.protocol !== r.protocol ||
-    target.pathname !== r.pathname;
+  const redirectNeeded = hostRedirectNeeded || protoRedirectNeeded || pathRedirectNeeded;
 
   if (redirectNeeded) {
-    target.search = r.search;
+    // Preserve https protocol on redirected targets if incoming request was https
+    if (clientProto === 'https') {
+      target.protocol = 'https:';
+    }
+    target.search = request.nextUrl.search;
     return NextResponse.redirect(target, PERMANENT_REDIRECT);
   }
 

@@ -20,7 +20,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const omitDefaultRobots =
     router.pathname === '/404' ||
-    path === '/painting-services' ||
     path === '/thank-you';
 
   return (

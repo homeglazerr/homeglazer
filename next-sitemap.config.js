@@ -73,7 +73,7 @@ module.exports = {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/*.htm', '/category/'],
+        disallow: ['/admin/', '/api/'],
       },
       // AI Crawlers - Allow for AI search visibility
       { userAgent: 'GPTBot', allow: '/' },

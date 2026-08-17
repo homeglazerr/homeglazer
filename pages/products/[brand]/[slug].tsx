@@ -259,6 +259,13 @@ const ProductDetails: React.FC<ProductDetailsProps & { brandSlug: string }> = ({
           url: `${SITE_URL}/products/${brandSlug}/${product.slug}`,
           category: product.category,
           sku: product.slug,
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'INR',
+            price: '1.00',
+            availability: 'https://schema.org/InStock',
+            itemCondition: 'https://schema.org/NewCondition',
+          },
         }}
       />
       <div className="bg-white flex flex-col overflow-hidden items-center">
