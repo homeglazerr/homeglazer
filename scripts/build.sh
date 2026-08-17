@@ -2,7 +2,7 @@
 set -e
 prisma generate
 if [[ -n "$DATABASE_URL" && "$DATABASE_URL" == mongodb* ]]; then
-  prisma db push
+  prisma db push || echo "Notice: Could not connect to DB during build phase, continuing with build."
 else
   echo "Skipping prisma db push (DATABASE_URL not set or not MongoDB)"
 fi
