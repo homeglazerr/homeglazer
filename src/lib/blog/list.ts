@@ -131,7 +131,8 @@ export async function getBlogListPage({
       orderBy: { publishedAt: 'desc' },
     });
 
-    const filteredIds = meta
+    type MetaItem = { id: string; categories: unknown };
+    const filteredIds = (meta as MetaItem[])
       .filter((row) => (row.categories as string[]).includes(category))
       .map((row) => row.id);
 
@@ -143,7 +144,8 @@ export async function getBlogListPage({
         })
       : [];
 
-    const rowById = new Map(rows.map((row) => [row.id, row]));
+    const typedRows = rows as BlogListRow[];
+    const rowById = new Map(typedRows.map((row) => [row.id, row]));
     const posts = pageIds
       .map((id) => rowById.get(id))
       .filter((row): row is NonNullable<typeof row> => Boolean(row))
@@ -171,7 +173,7 @@ export async function getBlogListPage({
   ]);
 
   return {
-    posts: rows.map(formatBlogListItem),
+    posts: (rows as BlogListRow[]).map(formatBlogListItem),
     total,
     hasMore: skip + rows.length < total,
     page: safePage,
