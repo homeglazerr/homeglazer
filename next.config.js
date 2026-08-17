@@ -80,14 +80,6 @@ module.exports = {
   },
   async redirects() {
     return [
-      // Canonical host (non-www): www must not serve duplicate HTML — 301 at routing layer
-      // (middleware also redirects; this covers CDN/host setups where www skips middleware)
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.homeglazer.com' }],
-        destination: 'https://homeglazer.com/:path*',
-        statusCode: 301,
-      },
       {
         source: '/terms-of-service',
         destination: '/terms-and-condition',
