@@ -176,7 +176,7 @@ export const getStaticProps: GetStaticProps<BlogProps> = async () => {
         totalRegularPosts: listPage.total,
         categories,
       },
-      revalidate: 300,
+      revalidate: 10,
     };
   } catch (error: any) {
     const errorDetails = {

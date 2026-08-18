@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import 'react-quill/dist/quill.snow.css';
 
-const DEFAULT_STATUS = false;
+const DEFAULT_STATUS = true;
 
 const generateSlug = (value: string) =>
   value

@@ -171,6 +171,12 @@ async function createBlog(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
+    try {
+      await res.revalidate('/blog');
+    } catch (revalErr) {
+      // Ignore if revalidate fails in dev
+    }
+
     return res.status(201).json(blog);
   } catch (error: any) {
     console.error('Create blog error:', error);

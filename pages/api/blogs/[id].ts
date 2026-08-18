@@ -141,6 +141,15 @@ async function updateBlog(req: NextApiRequest, res: NextApiResponse) {
       data: updateData,
     });
 
+    try {
+      await res.revalidate('/blog');
+      if (blog.slug) {
+        await res.revalidate(`/blog/${blog.slug}`);
+      }
+    } catch (revalErr) {
+      // Ignore if revalidate fails in dev
+    }
+
     return res.status(200).json(blog);
   } catch (error: any) {
     console.error('Update blog error:', error);
