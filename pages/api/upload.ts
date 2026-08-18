@@ -3,7 +3,6 @@ import { requireAuth } from '@/lib/middleware';
 import formidable from 'formidable';
 import path from 'path';
 import sharp from 'sharp';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 
 export const config = {
@@ -11,65 +10,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-function hasS3Credentials(): boolean {
-  const bucket = process.env.S3_BUCKET;
-  const accessKeyId = process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
-  return Boolean(bucket && accessKeyId && secretAccessKey);
-}
-
-// Use S3_ prefix - Amplify blocks env vars starting with AWS_
-function getS3Client() {
-  const region = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1';
-  const accessKeyId = process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
-
-  if (!accessKeyId || !secretAccessKey) {
-    throw new Error('S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY must be set');
-  }
-
-  return new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
-}
-
-function getMediaBaseUrl(): string {
-  const bucket = process.env.S3_BUCKET;
-  const region = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1';
-  if (!bucket) {
-    throw new Error('S3_BUCKET must be set');
-  }
-  return `https://${bucket}.s3.${region}.amazonaws.com`;
-}
-
-async function uploadToS3(
-  key: string,
-  body: Buffer,
-  contentType: string
-): Promise<string> {
-  const bucket = process.env.S3_BUCKET;
-  if (!bucket) {
-    throw new Error('S3_BUCKET must be set');
-  }
-
-  const client = getS3Client();
-  await client.send(
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: body,
-      ContentType: contentType,
-    })
-  );
-
-  const baseUrl = getMediaBaseUrl();
-  return `${baseUrl}/${key}`;
-}
 
 async function saveLocally(folder: string, filename: string, buffer: Buffer): Promise<string> {
   const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
@@ -126,22 +66,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const folder =
       type === 'brand' ? 'brands' : type === 'document' ? 'documents' : type === 'blog' ? 'blogs' : 'products';
-    const s3Key = `media/${folder}/${filename}`;
 
     let url: string;
 
     if (isPdf) {
       const buffer = fs.readFileSync(uploadedFile.filepath);
-      if (hasS3Credentials()) {
-        try {
-          url = await uploadToS3(s3Key, buffer, 'application/pdf');
-        } catch (s3Err: any) {
-          console.warn('S3 upload failed, falling back to local disk storage:', s3Err?.message || s3Err);
-          url = await saveLocally(folder, filename, buffer);
-        }
-      } else {
-        url = await saveLocally(folder, filename, buffer);
-      }
+      url = await saveLocally(folder, filename, buffer);
       fs.unlinkSync(uploadedFile.filepath);
 
       return res.status(200).json({
@@ -162,18 +92,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     fs.unlinkSync(uploadedFile.filepath);
 
     const webpFilename = filename.replace(extension, '.webp');
-    const webpKey = `media/${folder}/${webpFilename}`;
-
-    if (hasS3Credentials()) {
-      try {
-        url = await uploadToS3(webpKey, buffer, 'image/webp');
-      } catch (s3Err: any) {
-        console.warn('S3 upload failed, falling back to local disk storage:', s3Err?.message || s3Err);
-        url = await saveLocally(folder, webpFilename, buffer);
-      }
-    } else {
-      url = await saveLocally(folder, webpFilename, buffer);
-    }
+    url = await saveLocally(folder, webpFilename, buffer);
 
     return res.status(200).json({
       success: true,
