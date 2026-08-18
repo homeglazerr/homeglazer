@@ -11,14 +11,21 @@ export const config = {
   },
 };
 
-async function saveLocally(folder: string, filename: string, buffer: Buffer): Promise<string> {
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+async function saveFile(folder: string, filename: string, buffer: Buffer, mimeType: string): Promise<string> {
+  try {
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    const filePath = path.join(uploadDir, filename);
+    fs.writeFileSync(filePath, buffer);
+    return `/uploads/${folder}/${filename}`;
+  } catch (err: any) {
+    // On serverless platforms like Vercel, /var/task is read-only (EROFS).
+    // Fall back to returning a self-contained Base64 Data URI stored in MongoDB.
+    console.warn(`Read-only filesystem (${err?.code || err?.message}). Using Base64 Data URI fallback.`);
+    return `data:${mimeType};base64,${buffer.toString('base64')}`;
   }
-  const filePath = path.join(uploadDir, filename);
-  fs.writeFileSync(filePath, buffer);
-  return `/uploads/${folder}/${filename}`;
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -71,8 +78,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (isPdf) {
       const buffer = fs.readFileSync(uploadedFile.filepath);
-      url = await saveLocally(folder, filename, buffer);
-      fs.unlinkSync(uploadedFile.filepath);
+      url = await saveFile(folder, filename, buffer, 'application/pdf');
+      
+      try {
+        fs.unlinkSync(uploadedFile.filepath);
+      } catch (e) {
+        // Ignore temp cleanup errors in serverless
+      }
 
       return res.status(200).json({
         success: true,
@@ -86,13 +98,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         fit: 'inside',
         withoutEnlargement: true,
       })
-      .webp({ quality: 85 })
+      .webp({ quality: 80 })
       .toBuffer();
 
-    fs.unlinkSync(uploadedFile.filepath);
+    try {
+      fs.unlinkSync(uploadedFile.filepath);
+    } catch (e) {
+      // Ignore temp cleanup errors in serverless
+    }
 
     const webpFilename = filename.replace(extension, '.webp');
-    url = await saveLocally(folder, webpFilename, buffer);
+    url = await saveFile(folder, webpFilename, buffer, 'image/webp');
 
     return res.status(200).json({
       success: true,
