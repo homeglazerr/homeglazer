@@ -27,8 +27,8 @@ const VISUALISER_ROOM_FOLDERS = [
 export function getMediaUrl(path: string): string {
   if (!path || typeof path !== 'string') return path;
 
-  // Already absolute URL - return as-is
-  if (path.startsWith('http://') || path.startsWith('https://')) {
+  // Already absolute URL or Data URI - return as-is
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
     return path;
   }
 
@@ -166,7 +166,7 @@ export function prepareBlogContentHtml(html: string): string {
 /** Returns absolute URL for media (for og:image, etc). Uses S3 when set, else siteUrl + path. */
 export function getAbsoluteMediaUrl(path: string, siteUrl: string): string {
   const url = getMediaUrl(path);
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
   return `${siteUrl.replace(/\/$/, '')}${url.startsWith('/') ? url : `/${url}`}`;
 }
 

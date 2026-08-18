@@ -26,7 +26,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
       <div className="relative h-60 w-full overflow-hidden">
         <Link href={`/blog/${post.slug}`} className="block h-full">
           <img 
-            src={post.coverImage?.startsWith('http') ? post.coverImage : getMediaUrl(post.coverImage || '')} 
+            src={getMediaUrl(post.coverImage || '')} 
             alt={post.title} 
             className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
           />

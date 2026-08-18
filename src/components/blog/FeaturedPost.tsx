@@ -37,7 +37,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="relative h-[350px] w-full overflow-hidden rounded-lg shadow-sm">
             <img 
-              src={safePost.coverImage?.startsWith('http') ? safePost.coverImage : getMediaUrl(safePost.coverImage || '')} 
+              src={getMediaUrl(safePost.coverImage || '')} 
               alt={safePost.title} 
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" 
             />

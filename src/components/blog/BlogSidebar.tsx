@@ -295,7 +295,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ currentPostId, recentPosts = 
                 key={post.id}
                 title={post.title}
                 date={post.date}
-                imageUrl={post.coverImage?.startsWith('http') ? post.coverImage : getMediaUrl(post.coverImage || '')}
+                imageUrl={getMediaUrl(post.coverImage || '')}
                 slug={post.slug}
               />
             ))}
@@ -313,7 +313,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ currentPostId, recentPosts = 
                 key={post.id}
                 title={post.title}
                 date={post.date}
-                imageUrl={post.coverImage?.startsWith('http') ? post.coverImage : getMediaUrl(post.coverImage || '')}
+                imageUrl={getMediaUrl(post.coverImage || '')}
                 slug={post.slug}
               />
             ))}

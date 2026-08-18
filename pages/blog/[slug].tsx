@@ -179,7 +179,7 @@ export const getServerSideProps: GetServerSideProps<BlogPostPageProps> = async (
     }
 
     // Fetch the blog post by slug from database
-    const blog = await prisma.blogPost.findUnique({
+    const blog = await prisma.blogPost.findFirst({
       where: { slug, published: true },
       select: {
         id: true,
