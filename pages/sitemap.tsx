@@ -115,6 +115,20 @@ const sitemapData: SitemapSection[] = [
     ]
   },
   {
+    title: "Delhi Painting Services",
+    icon: <Building2 className="w-5 h-5" />,
+    links: [
+      { name: "House Painting Services in Delhi", href: "/house-painting-services-in-delhi" },
+      { name: "Interior Painting Services in Delhi", href: "/interior-painting-services-in-delhi" },
+      { name: "Exterior Painting Services in Delhi", href: "/exterior-painting-services-in-delhi" },
+      { name: "Painting Contractors in Delhi", href: "/painting-contractors-in-delhi" },
+      { name: "House Painting Cost in Delhi", href: "/house-painting-cost-in-delhi" },
+      { name: "Texture Painting Services in Delhi", href: "/texture-painting-services-in-delhi" },
+      { name: "Wood Polishing Services in Delhi", href: "/wood-polishing-services-in-delhi" },
+      { name: "Commercial Painting Contractors in Delhi", href: "/commercial-painting-contractors-in-delhi" },
+    ]
+  },
+  {
     title: "Painting Services",
     icon: <Paintbrush className="w-5 h-5" />,
     links: [

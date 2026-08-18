@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { 
   NavigationMenu,
   NavigationMenuContent,
@@ -17,6 +18,7 @@ interface NavItemProps {
   onClick?: () => void;
   hasDropdown?: boolean;
   children?: React.ReactNode;
+  isActive?: boolean;
 }
 
 const NavItem: React.FC<NavItemProps> = ({
@@ -24,18 +26,22 @@ const NavItem: React.FC<NavItemProps> = ({
   path,
   onClick,
   hasDropdown,
-  children
+  children,
+  isActive
 }) => {
   if (hasDropdown) {
     return (
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-white/30 backdrop-blur-xl hover:bg-white/40 text-sm font-medium py-2 px-4 rounded-2xl border border-white/30 transition-all duration-300 text-gray-800 hover:text-gray-900">
+            <NavigationMenuTrigger className={cn(
+              "bg-transparent hover:bg-gray-100/60 text-sm font-semibold py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
+              isActive ? "text-[#ED276E] font-bold" : ""
+            )}>
               {label}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-white/80 backdrop-blur-2xl rounded-2xl border border-white/40 shadow-2xl">
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-white/95 backdrop-blur-2xl rounded-2xl border border-gray-100 shadow-2xl">
                 {children}
               </ul>
             </NavigationMenuContent>
@@ -48,7 +54,10 @@ const NavItem: React.FC<NavItemProps> = ({
   return (
     <Link 
       href={path} 
-      className="self-stretch bg-white/30 backdrop-blur-xl min-h-[40px] gap-2.5 whitespace-nowrap px-4 py-2 rounded-2xl hover:bg-white/40 transition-all duration-300 text-sm font-medium flex items-center border border-white/30 text-gray-800 hover:text-gray-900" 
+      className={cn(
+        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-sm font-semibold flex items-center text-gray-800 hover:text-[#ED276E]",
+        isActive ? "text-[#ED276E] font-bold" : ""
+      )} 
       onClick={onClick}
     >
       {label}
@@ -67,13 +76,13 @@ const ListItem = React.forwardRef<
           ref={ref}
           href={href || '#'}
           className={cn(
-            "block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] border border-transparent hover:border-white/30",
+            "block select-none space-y-1 rounded-xl p-3.5 leading-none no-underline outline-none transition-all duration-200 hover:bg-pink-50/60 border border-transparent hover:border-pink-100/50 group",
             className
           )}
           {...props}
         >
-          <div className="text-sm font-semibold leading-none text-gray-800">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-gray-600 mt-2">
+          <div className="text-sm font-bold text-gray-900 group-hover:text-[#ED276E] transition-colors">{title}</div>
+          <p className="line-clamp-2 text-xs leading-relaxed text-gray-500 mt-1">
             {children}
           </p>
         </Link>
@@ -86,24 +95,19 @@ ListItem.displayName = "ListItem";
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter();
 
-  // Effect to handle body scroll locking when menu is open
   useEffect(() => {
     if (isMenuOpen) {
-      // Lock scroll on body when menu is open
       document.body.style.overflow = 'hidden';
     } else {
-      // Re-enable scrolling when menu is closed
       document.body.style.overflow = 'auto';
     }
-
-    // Cleanup function to ensure scroll is restored when component unmounts
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [isMenuOpen]);
 
-  // Effect to handle scroll-based styling
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -115,7 +119,6 @@ const Header: React.FC = () => {
 
   const closeMenu = () => setIsMenuOpen(false);
   
-  // Updated service dropdown to only include the 4 main categories
   const serviceDropdownItems = [
     {
       title: 'Painting Services',
@@ -182,34 +185,34 @@ const Header: React.FC = () => {
 
   return (
     <div className={cn(
-      "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out",
-      "w-[90%] sm:w-[90%] md:w-[90%] lg:w-max lg:max-w-[95vw] mx-auto mt-4 sm:mt-2 lg:mt-3",
-      "bg-white/50 backdrop-blur-3xl",
-      "border border-white/40",
-      "shadow-[0_12px_40px_rgba(0,0,0,0.15)]",
-      "rounded-3xl",
-      isScrolled ? "bg-white/60 backdrop-blur-[50px] shadow-[0_16px_50px_rgba(0,0,0,0.2)]" : ""
+      "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-out",
+      "w-[94%] sm:w-[92%] lg:w-max lg:max-w-[95vw] mx-auto mt-3 sm:mt-2 lg:mt-3.5",
+      "bg-white/85 backdrop-blur-xl",
+      "border border-gray-200/80",
+      "shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
+      "rounded-full",
+      isScrolled ? "bg-white/95 backdrop-blur-2xl shadow-[0_12px_36px_rgba(0,0,0,0.12)] border-gray-300/80" : ""
     )}>
-      <div className="flex flex-nowrap items-center gap-4 justify-between lg:justify-center lg:gap-8 px-6 py-3 lg:px-8 lg:py-4 w-auto">
-        <Link href="/" className="group flex-shrink-0">
+      <div className="flex flex-nowrap items-center gap-3 justify-between lg:justify-center lg:gap-6 px-5 py-2 lg:px-7 lg:py-2.5 w-auto">
+        <Link href="/" className="group flex-shrink-0 flex items-center gap-2">
           <img 
             src="https://cdn.builder.io/api/v1/image/assets/ebe74153cda349e3ba80a6039bb1465f/e26e09b75bb9c4ab63f78d15296ed43e8713cb0b?placeholderIfAbsent=true" 
-            alt="Company Logo" 
+            alt="HomeGlazer Logo" 
             className="aspect-[2.6] object-contain w-24 lg:w-28 transition-all duration-300 group-hover:scale-105" 
           />
         </Link>
         
         {/* Burger menu for mobile/tablet */}
         <button 
-          className="lg:hidden p-2 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/30 hover:bg-white/50 transition-all duration-300" 
+          className="lg:hidden p-2 rounded-full bg-gray-100/80 hover:bg-gray-200 transition-all duration-200 text-gray-800" 
           onClick={() => setIsMenuOpen(!isMenuOpen)} 
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
-          {isMenuOpen ? <X size={24} className="text-gray-800" /> : <Menu size={24} className="text-gray-800" />}
+          {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
         
         {/* Navigation for desktop */}
-        <nav className="hidden lg:inline-flex gap-3 justify-center my-auto w-auto whitespace-nowrap">
+        <nav className="hidden lg:inline-flex gap-1 justify-center my-auto w-auto whitespace-nowrap">
           {navItems.map((item, index) => (
             <NavItem 
               key={index} 
@@ -217,63 +220,74 @@ const Header: React.FC = () => {
               path={item.path} 
               hasDropdown={item.hasDropdown}
               children={item.children}
+              isActive={router.pathname === item.path || (item.path !== '/' && router.pathname.startsWith(item.path))}
             />
           ))}
         </nav>
         
-        {/* Phone number - desktop only (hidden on tablet and mobile) */}
+        {/* Phone number - NO background, clean text & icon */}
         <a
           href="tel:+919717256514"
-          className="hidden lg:flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-[#ED276E] transition-colors flex-shrink-0"
+          className="hidden lg:flex items-center gap-2 text-sm font-bold text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
           aria-label="Call us"
         >
-          <Phone size={16} /> +91 97172 56514
+          <Phone size={16} className="text-[#ED276E]" /> +91 97172 56514
         </a>
       </div>
       
       {/* Mobile menu overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/30 z-[99999] top-[80px] lg:hidden">
-          <div className="bg-white/95 border border-white/40 rounded-3xl mx-4 mt-4 shadow-2xl h-[70vh]">
-            <div className="h-full overflow-y-auto p-6">
-              <nav className="flex flex-col items-center gap-4 text-xl">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99999] top-[75px] lg:hidden transition-all duration-300">
+          <div className="bg-white border border-gray-200 rounded-3xl mx-4 mt-3 shadow-2xl max-h-[75vh] overflow-hidden">
+            <div className="h-full overflow-y-auto p-5 space-y-3">
+              <nav className="flex flex-col gap-2">
                 <div className="w-full">
-                  <details className="w-full">
-                    <summary className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 flex items-center justify-center cursor-pointer">
-                      Services <ChevronDown className="ml-2" size={20} />
+                  <details className="w-full group">
+                    <summary className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 transition-all duration-200 flex items-center justify-between cursor-pointer font-bold text-gray-800 text-base">
+                      <span>Services</span>
+                      <ChevronDown className="group-open:rotate-180 transition-transform duration-200 text-[#ED276E]" size={18} />
                     </summary>
-                    <div className="pl-4 flex flex-col items-center gap-3 mt-4">
+                    <div className="pl-2 flex flex-col gap-2 mt-2">
                       {serviceDropdownItems.map((item, index) => (
                         <Link 
                           key={index} 
                           href={item.path} 
                           onClick={closeMenu}
-                          className="py-2 px-4 text-base bg-white/70 rounded-xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center"
+                          className="py-2.5 px-4 text-sm bg-white rounded-xl border border-gray-100 hover:bg-pink-50/50 hover:text-[#ED276E] transition-all duration-200 w-full font-semibold text-gray-700 flex items-center justify-between"
                         >
-                          {item.title}
+                          <span>{item.title}</span>
+                          <span className="text-xs text-gray-400 font-normal">Explore →</span>
                         </Link>
                       ))}
                     </div>
                   </details>
                 </div>
-                <Link href="/products" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  Products
-                </Link>
-                <Link href="/paint-budget-calculator" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  Budget Calculator
-                </Link>
-                <Link href="/colour-visualiser" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  Colour Visualisers
-                </Link>
-                <Link href="/enquiry" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  Enquiry
-                </Link>
-                <Link href="/about" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  About
-                </Link>
-                <Link href="/blog" onClick={closeMenu} className="py-3 px-6 bg-white/80 rounded-2xl border border-white/30 hover:bg-white/90 transition-all duration-300 w-full text-center">
-                  Blog
-                </Link>
+                
+                {[
+                  { label: 'Products', path: '/products' },
+                  { label: 'Budget Calculator', path: '/paint-budget-calculator' },
+                  { label: 'Colour Visualisers', path: '/colour-visualiser' },
+                  { label: 'Enquiry', path: '/enquiry' },
+                  { label: 'About Us', path: '/about' },
+                  { label: 'Blog & Articles', path: '/blog' }
+                ].map((nav, nIdx) => (
+                  <Link
+                    key={nIdx}
+                    href={nav.path}
+                    onClick={closeMenu}
+                    className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 text-gray-800 font-bold text-base transition-all duration-200 w-full flex items-center justify-between"
+                  >
+                    <span>{nav.label}</span>
+                    <span className="text-xs text-[#299dd7] font-semibold">View</span>
+                  </Link>
+                ))}
+
+                <a
+                  href="tel:+919717256514"
+                  className="mt-3 w-full border border-[#ED276E] text-[#ED276E] hover:bg-[#ED276E] hover:text-white py-3.5 px-5 rounded-2xl font-bold text-center flex items-center justify-center gap-2 transition-all text-sm"
+                >
+                  <Phone size={16} /> Call +91 97172 56514
+                </a>
               </nav>
             </div>
           </div>
