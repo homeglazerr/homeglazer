@@ -12,6 +12,13 @@ export const config = {
   },
 };
 
+function hasS3Credentials(): boolean {
+  const bucket = process.env.S3_BUCKET;
+  const accessKeyId = process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
+  return Boolean(bucket && accessKeyId && secretAccessKey);
+}
+
 // Use S3_ prefix - Amplify blocks env vars starting with AWS_
 function getS3Client() {
   const region = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -64,6 +71,16 @@ async function uploadToS3(
   return `${baseUrl}/${key}`;
 }
 
+async function saveLocally(folder: string, filename: string, buffer: Buffer): Promise<string> {
+  const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+  const filePath = path.join(uploadDir, filename);
+  fs.writeFileSync(filePath, buffer);
+  return `/uploads/${folder}/${filename}`;
+}
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -71,7 +88,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const form = formidable({
-      maxFileSize: 5 * 1024 * 1024, // 5MB
+      maxFileSize: 10 * 1024 * 1024, // 10MB limit
       keepExtensions: true,
     });
 
@@ -115,7 +132,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (isPdf) {
       const buffer = fs.readFileSync(uploadedFile.filepath);
-      url = await uploadToS3(s3Key, buffer, 'application/pdf');
+      if (hasS3Credentials()) {
+        try {
+          url = await uploadToS3(s3Key, buffer, 'application/pdf');
+        } catch (s3Err: any) {
+          console.warn('S3 upload failed, falling back to local disk storage:', s3Err?.message || s3Err);
+          url = await saveLocally(folder, filename, buffer);
+        }
+      } else {
+        url = await saveLocally(folder, filename, buffer);
+      }
       fs.unlinkSync(uploadedFile.filepath);
 
       return res.status(200).json({
@@ -137,7 +163,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const webpFilename = filename.replace(extension, '.webp');
     const webpKey = `media/${folder}/${webpFilename}`;
-    url = await uploadToS3(webpKey, buffer, 'image/webp');
+
+    if (hasS3Credentials()) {
+      try {
+        url = await uploadToS3(webpKey, buffer, 'image/webp');
+      } catch (s3Err: any) {
+        console.warn('S3 upload failed, falling back to local disk storage:', s3Err?.message || s3Err);
+        url = await saveLocally(folder, webpFilename, buffer);
+      }
+    } else {
+      url = await saveLocally(folder, webpFilename, buffer);
+    }
 
     return res.status(200).json({
       success: true,
@@ -147,14 +183,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } catch (error: any) {
     console.error('Upload error:', error);
     if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: 'File size too large. Maximum 5MB allowed.' });
+      return res.status(400).json({ error: 'File size too large. Maximum 10MB allowed.' });
     }
     if (error.message?.includes('unsupported image format') || error.code === 'ERR_UNSUPPORTED') {
       return res.status(400).json({ error: 'Unsupported image format. Use JPEG, PNG, or WebP.' });
     }
-    const msg = process.env.NODE_ENV === 'development' && error?.message
-      ? error.message
-      : 'Internal server error';
+    const msg = error?.message || 'Internal server error';
     return res.status(500).json({ error: msg });
   }
 }
