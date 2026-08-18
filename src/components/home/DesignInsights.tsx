@@ -1,96 +1,137 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import SectionCarousel from './SectionCarousel';
-import { CarouselItem } from "@/components/ui/carousel";
 import { SECTION_CTA_CLASSES } from './CTAButton';
-import { blogPosts } from '@/data/blogPosts';
+import { blogPosts as fallbackPosts } from '@/data/blogPosts';
 import { getMediaUrl } from '@/lib/mediaUrl';
-import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
+
+interface BlogPostItem {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  date?: string;
+  publishedAt?: string;
+  createdAt?: string;
+  author: string;
+  readTime: string;
+  coverImage: string;
+}
 
 const DesignInsights: React.FC = () => {
-  // Limit to 6 blog posts for the carousel to ensure smooth looping when slidesToShow is 3
-  const featuredBlogPosts = blogPosts.slice(0, 6);
-
-  // Responsive slidesToShow logic
-  const [slidesToShow, setSlidesToShow] = useState(3);
+  const [posts, setPosts] = useState<BlogPostItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const updateSlides = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setSlidesToShow(1);
-      } else if (width < 1024) {
-        setSlidesToShow(2);
-      } else {
-        setSlidesToShow(3);  // Always show 3 items on desktop
+    const fetchLatestBlogs = async () => {
+      try {
+        const response = await fetch('/api/blogs?published=true&limit=3');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const formatted: BlogPostItem[] = data.map((b: any) => ({
+              id: b.id || b._id,
+              slug: b.slug,
+              title: b.title,
+              excerpt: b.excerpt,
+              author: b.author || 'HomeGlazer Team',
+              readTime: b.readTime ? `${b.readTime} min read` : '5 min read',
+              coverImage: b.coverImage || '/uploads/hero-banner.webp',
+              date: b.publishedAt || b.createdAt
+                ? new Date(b.publishedAt || b.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })
+                : 'Recent',
+            }));
+            setPosts(formatted.slice(0, 3));
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch latest blogs from MongoDB:', err);
       }
+
+      // Fallback if DB fetch fails or returns empty
+      const fallbackFormatted: BlogPostItem[] = fallbackPosts.slice(0, 3).map((p) => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        excerpt: p.excerpt,
+        author: p.author,
+        readTime: `${p.readTime} min read`,
+        coverImage: p.coverImage,
+        date: p.date,
+      }));
+      setPosts(fallbackFormatted);
+      setLoading(false);
     };
 
-    // Call immediately on mount
-    updateSlides();
-    
-    // Add resize listener
-    window.addEventListener("resize", updateSlides);
-    
-    // Cleanup
-    return () => window.removeEventListener("resize", updateSlides);
+    fetchLatestBlogs();
   }, []);
 
   return (
-    <section className="w-[100%] lg:w-[100%] mx-auto flex flex-col items-center mt-[50px] py-10 max-md:mt-10 2xl:w-[1400px]">
-      <h2 className="text-[40px] font-medium self-center leading-[150%] mb-4">
-        Painting Blogs
-      </h2>
-      <p className="text-[rgba(64,80,94,1)] text-xl font-light text-center mb-10">
-        Expert Tips & Trends for Your Space
-      </p>
-      <div className="w-full">
-        <SectionCarousel slidesToShow={slidesToShow} blogSection={true}>
-          {featuredBlogPosts.map((post) => (
-            <CarouselItem key={post.id} className="basis-full md:basis-1/2 lg:basis-1/3" style={{ paddingRight: '1rem', paddingLeft: '0' }}>
-              <Link href={`/blog/${post.slug}`} className="block">
-                <div className="relative flex flex-col h-[400px] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="h-[200px] overflow-hidden">
+    <section className="w-full mx-auto flex flex-col items-center mt-[50px] py-10 max-md:mt-10">
+      <div className="w-[95%] lg:w-[90%] 2xl:w-[1400px] mx-auto text-center">
+        <h2 className="text-[40px] font-medium leading-[150%] mb-3">
+          Painting Blogs
+        </h2>
+        <p className="text-[rgba(64,80,94,1)] text-xl font-light mb-12">
+          Latest Insights, Expert Tips & Trends for Your Home
+        </p>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gray-100 animate-pulse h-[380px] rounded-2xl"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group block h-full">
+                <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1">
+                  <div className="h-52 overflow-hidden relative bg-gray-100">
                     <img
                       src={getMediaUrl(post.coverImage)}
-                      alt={`Blog Post - ${post.title}`}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <div className="flex flex-col p-4 bg-white flex-grow">
-                    <div className="h-4 mb-2 flex items-center text-xs text-gray-500">
-                      <span>{post.date}</span>
-                      <span className="mx-2">•</span>
-                      <span>{post.readTime} min read</span>
+                  <div className="p-6 flex flex-col flex-grow justify-between">
+                    <div>
+                      <div className="flex items-center text-xs font-semibold text-[#ED276E] mb-3">
+                        <span>{post.date}</span>
+                        <span className="mx-2">•</span>
+                        <span>{post.readTime}</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-[#299dd7] transition-colors line-clamp-2 leading-snug">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 font-light">
+                        {post.excerpt}
+                      </p>
                     </div>
-                    <h3 className="h-12 text-lg font-medium line-clamp-2 mb-2">
-                      {post.title}
-                    </h3>
-                    <p className="h-[60px] text-[rgba(64,80,94,1)] text-sm font-normal line-clamp-3 text-ellipsis mb-4">
-                      {post.excerpt}
-                    </p>
-                    <div className="h-8 mt-auto flex justify-between items-center">
-                      <span className="text-[rgba(64,80,94,1)] text-sm">
-                        By {post.author}
-                      </span>
-                      <span 
-                        className="inline-flex items-center rounded-full bg-[#ED276E] px-4 py-2 text-sm text-white hover:bg-[#299dd7] transition-colors"
-                      >
-                        Read More
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <span className="text-xs text-gray-500 font-medium">By {post.author}</span>
+                      <span className="inline-flex items-center text-xs font-bold text-[#ED276E] group-hover:text-[#299dd7] transition-colors">
+                        Read Article <ArrowRight className="ml-1 h-3.5 w-3.5" />
                       </span>
                     </div>
                   </div>
                 </div>
               </Link>
-            </CarouselItem>
-          ))}
-        </SectionCarousel>
-      </div>
-      <div className="flex justify-center">
-        <Link href="/blog" className={SECTION_CTA_CLASSES}>
-          View All Articles
-        </Link>
+            ))}
+          </div>
+        )}
+
+        <div className="flex justify-center mt-12">
+          <Link href="/blog" className={SECTION_CTA_CLASSES}>
+            View All Articles
+          </Link>
+        </div>
       </div>
     </section>
   );
