@@ -52,7 +52,9 @@ module.exports = {
       },
       fontFamily: {
         "body-caption-s-regular": "var(--body-caption-s-regular-font-family)",
+        poppins: ["Poppins", "sans-serif"],
         sans: [
+          "Poppins",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",

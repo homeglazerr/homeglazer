@@ -12,6 +12,7 @@ import ContactForm from '@/components/home/ContactForm';
 import RoomMakeover from '@/components/home/RoomMakeover';
 import AboutHowWeDoIt from '@/components/about/AboutHowWeDoIt';
 import ColourVisualizer from '@/components/home/ColourVisualizer';
+import CalculatorForm from '@/components/calculator/CalculatorForm';
 import PaintBrands from '@/components/home/PaintBrands';
 import TeamSection from '@/components/home/TeamSection';
 import Certificates from '@/components/home/Certificates';
@@ -52,6 +53,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Services />
+      <CalculatorForm />
       <WhyChooseUs />
       <ContactForm />
       <RoomMakeover />

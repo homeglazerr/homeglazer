@@ -48,26 +48,26 @@ const ColourVisualizer: React.FC = () => {
     <section className="bg-[rgba(223,223,223,0.27)] w-full mt-0 py-[35px] max-md:mt-6">
       <div className="container mx-auto w-[80%] px-0 lg:px-8 flex flex-col lg:flex-row items-center gap-8 2xl:w-[1400px]">
         <div className="w-full lg:w-1/3 my-auto order-2 lg:order-1">
-          <div className="max-w-[354px] mx-auto">
-            <h2 className="text-[40px] font-medium leading-[150%]">
+          <div className="max-w-[400px] mx-auto lg:mx-0">
+            <h2 className="text-[32px] sm:text-[40px] font-medium leading-[140%]">
               Visualise Your Colour
             </h2>
-            <p className="text-xl text-[rgba(123,130,137,1)] font-light mt-[18px]">
+            <p className="text-lg sm:text-xl text-[rgba(123,130,137,1)] font-light mt-[18px]">
               See how different colours transform your space
             </p>
             <CTAButton 
               to="/colour-visualiser" 
-              className="flex min-h-[60px] w-60 max-w-full items-center gap-[13px] text-[21px] text-black font-normal text-center justify-center mt-7 pl-[19px] pr-[11px] py-[13px] rounded-[35px] transition-all duration-300" 
+              className="inline-flex min-h-[56px] w-auto min-w-[240px] whitespace-nowrap shrink-0 items-center justify-between gap-3 text-base sm:text-lg font-semibold text-black mt-7 px-7 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300" 
               style={{
                 backgroundColor: selectedColor,
                 color: "#000000"
               }}
             >
-              <span className="self-stretch my-auto">Explore All Colour</span>
+              <span>Explore All Colours</span>
               <img 
                 src="https://cdn.builder.io/api/v1/image/assets/ebe74153cda349e3ba80a6039bb1465f/bbec7bbdc40c35a19214d20ad0710ac73ff6069d?placeholderIfAbsent=true" 
                 alt="Arrow Icon" 
-                className="aspect-[1] object-contain w-[34px] self-stretch shrink-0 my-auto" 
+                className="w-6 h-6 object-contain shrink-0" 
               />
             </CTAButton>
           </div>
