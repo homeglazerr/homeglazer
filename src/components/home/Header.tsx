@@ -35,7 +35,7 @@ const NavItem: React.FC<NavItemProps> = ({
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger className={cn(
-              "bg-transparent hover:bg-gray-100/60 text-sm font-semibold py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
+              "bg-transparent hover:bg-gray-100/60 text-[15px] font-semibold py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
               isActive ? "text-[#ED276E] font-bold" : ""
             )}>
               {label}
@@ -55,7 +55,7 @@ const NavItem: React.FC<NavItemProps> = ({
     <Link 
       href={path} 
       className={cn(
-        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-sm font-semibold flex items-center text-gray-800 hover:text-[#ED276E]",
+        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-[15px] font-semibold flex items-center text-gray-800 hover:text-[#ED276E]",
         isActive ? "text-[#ED276E] font-bold" : ""
       )} 
       onClick={onClick}
@@ -81,7 +81,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-bold text-gray-900 group-hover:text-[#ED276E] transition-colors">{title}</div>
+          <div className="text-base font-bold text-gray-900 group-hover:text-[#ED276E] transition-colors">{title}</div>
           <p className="line-clamp-2 text-xs leading-relaxed text-gray-500 mt-1">
             {children}
           </p>
@@ -228,7 +228,7 @@ const Header: React.FC = () => {
         {/* Phone number - NO background, clean text & icon */}
         <a
           href="tel:+919717256514"
-          className="hidden lg:flex items-center gap-2 text-sm font-bold text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
+          className="hidden lg:flex items-center gap-2 text-[15px] font-bold text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
           aria-label="Call us"
         >
           <Phone size={16} className="text-[#ED276E]" /> +91 97172 56514

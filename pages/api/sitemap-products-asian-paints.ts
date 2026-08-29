@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { canonicalSitemapBase } from '@/lib/sitemapBaseUrl';
 
 const STATIC_PATH = path.join(process.cwd(), 'public', 'sitemap-products-asian-paints.xml');
-const DEFAULT_BASE = 'https://homeglazer.com';
+const DEFAULT_BASE = 'https://www.homeglazer.com';
 const PRODUCTION_HOSTS = ['homeglazer.com', 'www.homeglazer.com'];
 const ASIAN_PAINTS_SLUG = 'asian-paints';
 

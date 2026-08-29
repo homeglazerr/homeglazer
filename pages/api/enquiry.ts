@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
+import { sendLeadToCRM } from '@/lib/crmLeadSync';
 
 interface EnquiryFormData {
   name: string;
@@ -311,6 +312,19 @@ Email: homeglazer@gmail.com | Phone: +91-9717256514
     };
 
     await transporter.sendMail(homeglazerMailOptions);
+
+    // Sync Lead to HomeGlazer CRM
+    try {
+      await sendLeadToCRM({
+        name,
+        email,
+        phone,
+        source: 'website',
+        notes: `Property: ${propertyType}, Service: ${serviceType}, Area: ${area || 'N/A'} sq.ft, Budget: ${budgetDisplay}`,
+      });
+    } catch (crmErr) {
+      console.error('CRM Lead Sync non-blocking error:', crmErr);
+    }
 
     // Send thank you email to customer
     const customerThankYouHtml = `

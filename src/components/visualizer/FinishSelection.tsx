@@ -570,16 +570,6 @@ const FinishSelection: React.FC<FinishSelectionProps> = ({
   
   return (
     <main className="min-h-screen bg-white pt-28 flex flex-col items-center px-4 lg:px-0 relative pb-8">
-      {/* Breadcrumbs Section */}
-      {breadcrumbs.length > 0 && (
-        <div className="w-full mb-4" ref={previewImageRef}>
-          <h3 className="text-sm font-medium mb-2 text-center">
-            Modify your selections here:
-          </h3>
-          <Breadcrumbs items={breadcrumbs} onStepClick={onStepClick} />
-        </div>
-      )}
-      
       <h2 className="text-xl font-semibold mb-2 text-center">Step 5: Final Preview</h2>
       <p className="mb-6 text-gray-600 text-center max-w-xl">
         Assign colours to different walls and surfaces. Click on a wall to paint it with your selected colours.

@@ -99,21 +99,7 @@ const Calculator: React.FC = () => {
       <div className="bg-white flex flex-col overflow-hidden items-center">
         <Header />
 
-      <main className="w-full flex flex-col items-center">
-      <div className="w-[90%] lg:w-[80%] mx-auto pt-28">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/paint-budget-calculator">Budget Calculator</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
+      <main className="w-full flex flex-col items-center pt-24 md:pt-28">
       <CalculatorForm />
 
       <section

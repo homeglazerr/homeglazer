@@ -1,6 +1,6 @@
 /**
  * Single source of truth for sitemap origins (mirrors src/lib/sitemapBaseUrl.ts).
- * All generated <loc> URLs must use https://homeglazer.com (no www) for GSC.
+ * All generated <loc> URLs must use https://www.homeglazer.com (with www) for GSC.
  */
 
 const CANONICAL_ORIGIN = 'https://www.homeglazer.com';

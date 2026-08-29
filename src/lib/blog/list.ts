@@ -61,16 +61,6 @@ export function formatBlogListItem(blog: BlogListRow): BlogListItem {
 }
 
 export async function getFeaturedBlogPost(): Promise<BlogListItem | null> {
-  const featured = await prisma.blogPost.findFirst({
-    where: { published: true, featuredOrder: { not: null } },
-    orderBy: [{ featuredOrder: 'asc' }, { publishedAt: 'desc' }],
-    select: blogListSelect,
-  });
-
-  if (featured) {
-    return formatBlogListItem(featured);
-  }
-
   const latest = await prisma.blogPost.findFirst({
     where: { published: true },
     orderBy: { publishedAt: 'desc' },

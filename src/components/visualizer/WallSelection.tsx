@@ -29,16 +29,6 @@ const WallSelection: React.FC<WallSelectionProps> = ({
   onStepClick,
 }) => (
   <main className="min-h-screen bg-white pt-28 pb-8 flex flex-col items-center px-4 lg:px-0">
-    {/* Breadcrumbs Section */}
-    {breadcrumbs.length > 0 && (
-      <div className="w-full mb-4">
-                  <h3 className="text-sm font-medium mb-2 text-center">
-            Modify your selections here:
-          </h3>
-        <Breadcrumbs items={breadcrumbs} onStepClick={onStepClick} />
-      </div>
-    )}
-    
     <h2 className="text-xl font-semibold mb-2 text-center">Step 2: Choose a Room Variant</h2>
     <p className="mb-8 text-gray-600 text-center max-w-xl">Pick a photo/variant that best matches your space.</p>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">

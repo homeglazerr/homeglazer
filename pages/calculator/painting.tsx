@@ -103,24 +103,7 @@ const PaintingCalculator: React.FC = () => {
       <div className="bg-white flex flex-col overflow-hidden items-center">
         <Header />
 
-      <main className="w-full flex flex-col items-center">
-      <div className="w-[90%] lg:w-[80%] mx-auto pt-20 md:pt-28">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/paint-budget-calculator">Budget Calculator</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/calculator/painting">Painting Calculator</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+      <main className="w-full flex flex-col items-center pt-20 md:pt-24">
 
       <div className="w-[90%] lg:w-[80%] mx-auto pt-6 pb-2 text-center">
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--brand-pink)]">

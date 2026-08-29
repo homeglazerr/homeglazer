@@ -108,24 +108,7 @@ const WoodPolishingCalculator: React.FC = () => {
       <div className="bg-white flex flex-col overflow-hidden items-center">
         <Header />
 
-        <main className="w-full flex flex-col items-center">
-          <div className="w-[90%] lg:w-[80%] mx-auto pt-20 md:pt-28 flex justify-center">
-            <Breadcrumb className="w-full max-w-none flex justify-center">
-              <BreadcrumbList className="justify-center">
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/paint-budget-calculator">Budget Calculator</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/calculator/wood-polishing">Wood Polishing Calculator</BreadcrumbLink>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
+        <main className="w-full flex flex-col items-center pt-20 md:pt-24">
 
           <div className="w-full px-4 pt-6 pb-8 md:pb-10 text-center border-b border-gray-100 bg-gradient-to-b from-slate-50/90 to-white">
             <div className="w-[90%] lg:w-[80%] max-w-3xl mx-auto">

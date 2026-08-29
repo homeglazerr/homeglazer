@@ -4,7 +4,7 @@ import fs from 'fs';
 import { canonicalSitemapBase } from '@/lib/sitemapBaseUrl';
 
 const STATIC_PATH = path.join(process.cwd(), 'public', 'sitemap-colour-visualiser.xml');
-const DEFAULT_BASE = 'https://homeglazer.com';
+const DEFAULT_BASE = 'https://www.homeglazer.com';
 const PRODUCTION_HOSTS = ['homeglazer.com', 'www.homeglazer.com'];
 
 function getBaseUrlFromRequest(req: NextApiRequest): string | null {

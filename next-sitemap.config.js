@@ -6,7 +6,7 @@ const {
 const { apexHomeglazerBase } = require('./scripts/lib/sitemap-base-url');
 
 const apexSiteUrl = () =>
-  apexHomeglazerBase(process.env.SITE_URL || 'https://homeglazer.com');
+  apexHomeglazerBase(process.env.SITE_URL || 'https://www.homeglazer.com');
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {

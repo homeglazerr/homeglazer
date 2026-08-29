@@ -3,8 +3,6 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
-Disallow: /*.htm
-Disallow: /category/
 
 # GPTBot
 User-agent: GPTBot
@@ -51,6 +49,6 @@ User-agent: DeepSeekBot
 Allow: /
 
 # Host
-Host: https://homeglazer.com
+Host: https://www.homeglazer.com
 
-Sitemap: https://homeglazer.com/sitemap-index.xml
+Sitemap: https://www.homeglazer.com/sitemap-index.xml
