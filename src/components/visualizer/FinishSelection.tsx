@@ -103,7 +103,7 @@ const FinishSelection: React.FC<FinishSelectionProps> = ({
   selectedRoomType,
   roomTypeLabel = '',
 }) => {
-  const wallKeys = Object.keys(variant.walls);
+  const wallKeys = variant && variant.walls ? Object.keys(variant.walls) : [];
   const isMobileDevice = useIsMobileDevice();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const previewScrollRef = useRef<HTMLDivElement>(null);

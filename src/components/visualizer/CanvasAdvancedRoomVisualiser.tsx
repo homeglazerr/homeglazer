@@ -95,7 +95,7 @@ const CanvasAdvancedRoomVisualiser = forwardRef<CanvasAdvancedRoomVisualiserRef,
       ctx.drawImage(img, x, y, drawWidth, drawHeight);
 
       const currentAssignments = assignmentsOverride ?? assignments;
-      const wallKeys = Object.keys(wallMasks);
+      const wallKeys = wallMasks ? Object.keys(wallMasks) : [];
 
       for (const wallKey of wallKeys) {
         const pathData = wallMasks[wallKey];
@@ -306,7 +306,7 @@ const CanvasAdvancedRoomVisualiser = forwardRef<CanvasAdvancedRoomVisualiserRef,
 
     useEffect(() => {
       const prev = prevAssignmentsRef.current;
-      const wallKeys = Object.keys(wallMasks);
+      const wallKeys = wallMasks ? Object.keys(wallMasks) : [];
 
       const needsTransition = prev && wallKeys.some((k) => prev[k] !== assignments[k]);
 

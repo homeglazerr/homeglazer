@@ -408,7 +408,7 @@ export function useVisualizer() {
   const swatches = selectedBrand ? selectedBrand.colors : [];
 
   // Get available colour types from brand data
-  const colourTypes = brandData ? Object.keys(brandData.colorTypes) : [];
+  const colourTypes = brandData && brandData.colorTypes ? Object.keys(brandData.colorTypes) : [];
   
   // Get colours for selected colour type - use refresh key to force updates
   const coloursForType = React.useMemo(() => {
