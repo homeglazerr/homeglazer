@@ -235,7 +235,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             </div>
             <div class="footer">
               <p style="margin: 0 0 10px 0;"><strong>Home Glazer</strong> – We Paint Your Imagination</p>
-              <p style="margin: 0;">B-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010</p>
+              <p style="margin: 0;">H-16/137 Sangam Vihar, New Delhi, 110080</p>
               <p style="margin: 0;">Email: homeglazer@gmail.com | Phone: +91-9717256514</p>
             </div>
           </div>
@@ -309,7 +309,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `Thank you for using Home Glazer's Colour Visualiser. Your summary is attached to this email as a PDF.\n\n` +
       `We've also received a copy and will be happy to help you bring this look to life. Contact us anytime.\n\n` +
       `Best regards,\nHome Glazer\n\n` +
-      `--\nHome Glazer – We Paint Your Imagination\nB-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010\nEmail: homeglazer@gmail.com | Phone: +91-9717256514`;
+      `--\nHome Glazer – We Paint Your Imagination\nH-16/137 Sangam Vihar, New Delhi, 110080\nEmail: homeglazer@gmail.com | Phone: +91-9717256514`;
 
     try {
       await transporter.sendMail({

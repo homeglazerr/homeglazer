@@ -160,7 +160,7 @@ const TermsAndConditionPage: React.FC = () => {
                   </a>{' '}
                   or call <a href="tel:+919717256514" className="text-[#ED276E] underline">+91-9717256514</a>.
                 </p>
-                <p>Address: B-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010</p>
+                <p>Address: H-16/137 Sangam Vihar, New Delhi, 110080</p>
               </div>
             </div>
           </div>

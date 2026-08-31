@@ -27,10 +27,10 @@ export const JsonLd: React.FC<JsonLdProps> = ({ data }) => {
 /** Matches contact page — used for LocalBusiness / structured data only */
 const HG_POSTAL_ADDRESS = {
   '@type': 'PostalAddress' as const,
-  streetAddress: 'B-474, Basement, Greenfield Colony',
-  addressLocality: 'Faridabad',
-  addressRegion: 'Haryana',
-  postalCode: '121010',
+  streetAddress: 'H-16/137, Sangam Vihar',
+  addressLocality: 'New Delhi',
+  addressRegion: 'Delhi',
+  postalCode: '110080',
   addressCountry: 'IN',
 };
 

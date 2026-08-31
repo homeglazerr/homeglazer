@@ -375,7 +375,7 @@ export async function generateVisualiserSummaryPdf(
       doc.fontSize(12).font('Helvetica-Bold').fillColor(brandPink).text('Contact Home Glazer');
       doc.moveDown(0.5);
       doc.fontSize(10).font('Helvetica').fillColor('black');
-      doc.text('Address: B-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010');
+      doc.text('Address: H-16/137, Sangam Vihar, New Delhi - 110080');
       doc.text('Phone: +91-9717256514');
       doc.text('Email: homeglazer@gmail.com');
       doc.text('Website: www.homeglazer.com');

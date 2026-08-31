@@ -67,9 +67,9 @@ const contactPageFaq: FAQItem[] = [
       'We routinely specify Asian Paints, Dulux, Nerolac, Berger, and other major brands depending on site needs and your preference. If you already have a loyalty to one catalogue, mention it in your message. For colour exploration before you lock a code, the colour visualiser on our site is a useful companion to the conversation.',
   },
   {
-    question: 'Can I visit your Faridabad office instead of only calling?',
+    question: 'Can I visit your office instead of only calling?',
     answer:
-      'You are welcome to coordinate an office visit if you prefer face-to-face discussion. Phone and WhatsApp remain the fastest way to get on the calendar for a site survey. Use the map on this page for directions to Greenfield Colony, Faridabad.',
+      'You are welcome to coordinate an office visit if you prefer face-to-face discussion. Phone and WhatsApp remain the fastest way to get on the calendar for a site survey. Use the map on this page for directions to Sangam Vihar, New Delhi.',
   },
 ];
 
@@ -219,12 +219,12 @@ const ContactPage: React.FC = () => {
         <title>Contact Us | HomeGlazer - Get in Touch</title>
         <meta
           name="description"
-          content="Contact HomeGlazer in Faridabad for painting, textures, wood polishing, and renovation. Phone, email, map, and message form. Fast replies, site visits across Delhi NCR, and clear next steps."
+          content="Contact HomeGlazer in New Delhi for painting, textures, wood polishing, and renovation. Phone, email, map, and message form. Fast replies, site visits across Delhi NCR, and clear next steps."
         />
         <meta property="og:title" content="Contact Us | HomeGlazer - Get in Touch" />
         <meta
           property="og:description"
-          content="Reach HomeGlazer by phone, email, or form. Office in Faridabad; painting and wood services across Delhi NCR."
+          content="Reach HomeGlazer by phone, email, or form. Office in New Delhi; painting and wood services across Delhi NCR."
         />
         <meta property="og:image" content={getOgImageUrl("/uploads/services/contact-hero.jpg", SITE_URL)} />
         <meta name="twitter:title" content="Contact Us | HomeGlazer - Get in Touch" />
@@ -284,7 +284,7 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-medium">Address</h3>
-                    <p className="text-gray-600">B-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010</p>
+                    <p className="text-gray-600">H-16/137 Sangam Vihar, New Delhi, 110080</p>
                   </div>
                 </div>
                 

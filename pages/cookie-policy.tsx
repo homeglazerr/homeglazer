@@ -124,7 +124,7 @@ const CookiePolicyPage: React.FC = () => {
             <div className="space-y-4">
               <h2 className="text-2xl md:text-3xl font-semibold">Contact</h2>
               <div className="space-y-2 text-gray-700 leading-relaxed">
-                <p>B-474, Basement, Greenfield Colony, Faridabad, Haryana - 121010</p>
+                <p>H-16/137 Sangam Vihar, New Delhi, 110080</p>
                 <p>
                   Tel.:{' '}
                   <a href="tel:+919717256514" className="text-[#ED276E] underline">
