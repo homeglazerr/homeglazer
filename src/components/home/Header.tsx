@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { 
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -34,10 +34,13 @@ const NavItem: React.FC<NavItemProps> = ({
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className={cn(
-              "bg-transparent hover:bg-gray-100/60 text-[15px] font-semibold py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
-              isActive ? "text-[#ED276E] font-bold" : ""
-            )}>
+            <NavigationMenuTrigger
+              style={{ fontWeight: 400 }}
+              className={cn(
+                "bg-transparent hover:bg-gray-100/60 text-[15px] font-normal py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
+                isActive ? "text-[#ED276E] font-medium" : ""
+              )}
+            >
               {label}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -50,14 +53,15 @@ const NavItem: React.FC<NavItemProps> = ({
       </NavigationMenu>
     );
   }
-  
+
   return (
-    <Link 
-      href={path} 
+    <Link
+      href={path}
+      style={{ fontWeight: 400 }}
       className={cn(
-        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-[15px] font-semibold flex items-center text-gray-800 hover:text-[#ED276E]",
-        isActive ? "text-[#ED276E] font-bold" : ""
-      )} 
+        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-[15px] font-normal flex items-center text-gray-800 hover:text-[#ED276E]",
+        isActive ? "text-[#ED276E] font-medium" : ""
+      )}
       onClick={onClick}
     >
       {label}
@@ -81,7 +85,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-base font-bold text-gray-900 group-hover:text-[#ED276E] transition-colors">{title}</div>
+          <div className="text-base font-semibold text-gray-900 group-hover:text-[#ED276E] transition-colors">{title}</div>
           <p className="line-clamp-2 text-xs leading-relaxed text-gray-500 mt-1">
             {children}
           </p>
@@ -118,7 +122,7 @@ const Header: React.FC = () => {
   }, []);
 
   const closeMenu = () => setIsMenuOpen(false);
-  
+
   const serviceDropdownItems = [
     {
       title: 'Painting Services',
@@ -141,7 +145,7 @@ const Header: React.FC = () => {
       path: '/services/wood-services'
     }
   ];
-  
+
   const navItems = [
     {
       label: 'Services',
@@ -195,46 +199,47 @@ const Header: React.FC = () => {
     )}>
       <div className="flex flex-nowrap items-center gap-3 justify-between lg:justify-center lg:gap-6 px-5 py-2 lg:px-7 lg:py-2.5 w-auto">
         <Link href="/" className="group flex-shrink-0 flex items-center gap-2">
-          <img 
-            src="https://cdn.builder.io/api/v1/image/assets/ebe74153cda349e3ba80a6039bb1465f/e26e09b75bb9c4ab63f78d15296ed43e8713cb0b?placeholderIfAbsent=true" 
-            alt="HomeGlazer Logo" 
-            className="aspect-[2.6] object-contain w-24 lg:w-28 transition-all duration-300 group-hover:scale-105" 
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets/ebe74153cda349e3ba80a6039bb1465f/e26e09b75bb9c4ab63f78d15296ed43e8713cb0b?placeholderIfAbsent=true"
+            alt="HomeGlazer Logo"
+            className="aspect-[2.6] object-contain w-24 lg:w-28 transition-all duration-300 group-hover:scale-105"
           />
         </Link>
-        
+
         {/* Burger menu for mobile/tablet */}
-        <button 
-          className="lg:hidden p-2 rounded-full bg-gray-100/80 hover:bg-gray-200 transition-all duration-200 text-gray-800" 
-          onClick={() => setIsMenuOpen(!isMenuOpen)} 
+        <button
+          className="lg:hidden p-2 rounded-full bg-gray-100/80 hover:bg-gray-200 transition-all duration-200 text-gray-800"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
-        
+
         {/* Navigation for desktop */}
         <nav className="hidden lg:inline-flex gap-1 justify-center my-auto w-auto whitespace-nowrap">
           {navItems.map((item, index) => (
-            <NavItem 
-              key={index} 
-              label={item.label} 
-              path={item.path} 
+            <NavItem
+              key={index}
+              label={item.label}
+              path={item.path}
               hasDropdown={item.hasDropdown}
               children={item.children}
               isActive={router.pathname === item.path || (item.path !== '/' && router.pathname.startsWith(item.path))}
             />
           ))}
         </nav>
-        
+
         {/* Phone number - NO background, clean text & icon */}
         <a
           href="tel:+919717256514"
-          className="hidden lg:flex items-center gap-2 text-[15px] font-bold text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
+          style={{ fontWeight: 400 }}
+          className="hidden lg:flex items-center gap-2 text-[15px] font-normal text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
           aria-label="Call us"
         >
           <Phone size={16} className="text-[#ED276E]" /> +91 97172 56514
         </a>
       </div>
-      
+
       {/* Mobile menu overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99999] top-[75px] lg:hidden transition-all duration-300">
@@ -243,17 +248,18 @@ const Header: React.FC = () => {
               <nav className="flex flex-col gap-2">
                 <div className="w-full">
                   <details className="w-full group">
-                    <summary className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 transition-all duration-200 flex items-center justify-between cursor-pointer font-bold text-gray-800 text-base">
+                    <summary style={{ fontWeight: 400 }} className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 transition-all duration-200 flex items-center justify-between cursor-pointer font-normal text-gray-800 text-base">
                       <span>Services</span>
                       <ChevronDown className="group-open:rotate-180 transition-transform duration-200 text-[#ED276E]" size={18} />
                     </summary>
                     <div className="pl-2 flex flex-col gap-2 mt-2">
                       {serviceDropdownItems.map((item, index) => (
-                        <Link 
-                          key={index} 
-                          href={item.path} 
+                        <Link
+                          key={index}
+                          href={item.path}
                           onClick={closeMenu}
-                          className="py-2.5 px-4 text-sm bg-white rounded-xl border border-gray-100 hover:bg-pink-50/50 hover:text-[#ED276E] transition-all duration-200 w-full font-semibold text-gray-700 flex items-center justify-between"
+                          style={{ fontWeight: 400 }}
+                          className="py-2.5 px-4 text-sm bg-white rounded-xl border border-gray-100 hover:bg-pink-50/50 hover:text-[#ED276E] transition-all duration-200 w-full font-normal text-gray-700 flex items-center justify-between"
                         >
                           <span>{item.title}</span>
                           <span className="text-xs text-gray-400 font-normal">Explore →</span>
@@ -262,7 +268,7 @@ const Header: React.FC = () => {
                     </div>
                   </details>
                 </div>
-                
+
                 {[
                   { label: 'Products', path: '/products' },
                   { label: 'Budget Calculator', path: '/paint-budget-calculator' },
@@ -275,16 +281,18 @@ const Header: React.FC = () => {
                     key={nIdx}
                     href={nav.path}
                     onClick={closeMenu}
-                    className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 text-gray-800 font-bold text-base transition-all duration-200 w-full flex items-center justify-between"
+                    style={{ fontWeight: 400 }}
+                    className="py-3 px-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 text-gray-800 font-normal text-base transition-all duration-200 w-full flex items-center justify-between"
                   >
                     <span>{nav.label}</span>
-                    <span className="text-xs text-[#299dd7] font-semibold">View</span>
+                    <span className="text-xs text-[#299dd7] font-medium">View</span>
                   </Link>
                 ))}
 
                 <a
                   href="tel:+919717256514"
-                  className="mt-3 w-full border border-[#ED276E] text-[#ED276E] hover:bg-[#ED276E] hover:text-white py-3.5 px-5 rounded-2xl font-bold text-center flex items-center justify-center gap-2 transition-all text-sm"
+                  style={{ fontWeight: 400 }}
+                  className="mt-3 w-full border border-[#ED276E] text-[#ED276E] hover:bg-[#ED276E] hover:text-white py-3.5 px-5 rounded-2xl font-normal text-center flex items-center justify-center gap-2 transition-all text-sm"
                 >
                   <Phone size={16} /> Call +91 97172 56514
                 </a>

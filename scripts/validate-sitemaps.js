@@ -47,11 +47,11 @@ function main() {
 
     const locs = extractLocs(xml);
     for (const loc of locs) {
-      if (/^https?:\/\/www\.homeglazer\.com/i.test(loc)) {
+      if (/^https?:\/\/homeglazer\.com/i.test(loc) && !/^https?:\/\/www\.homeglazer\.com/i.test(loc)) {
         failures.push({
           file,
           loc,
-          reason: 'use apex origin https://homeglazer.com (no www) in sitemap <loc>',
+          reason: 'use canonical origin https://www.homeglazer.com (with www) in sitemap <loc>',
         });
         continue;
       }

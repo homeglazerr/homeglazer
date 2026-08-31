@@ -1,68 +1,68 @@
-# HomeGlazer — LLM index
-# https://homeglazer.com
+# HomeGlazer ï¿½ LLM index
+# https://www.homeglazer.com
 
 HomeGlazer is a professional painting services website for India: interior and exterior painting, wall decor (texture, wallpaper, stencil, graffiti), wood polishing and carpentry, paint products by major brands, colour visualisers, and paint budget calculators.
 
 ## Full Knowledge Base
 Complete entity description, service detail, FAQs, and guidance for AI systems:
-https://homeglazer.com/llms-full.txt
+https://www.homeglazer.com/llms-full.txt
 
 ## Primary entry points
-- Home: https://homeglazer.com/
-- About: https://homeglazer.com/about
-- Contact: https://homeglazer.com/contact
-- Enquiry: https://homeglazer.com/enquiry
-- FAQ: https://homeglazer.com/faq
-- Testimonials: https://homeglazer.com/testimonials
-- Gallery: https://homeglazer.com/gallery
-- Human-readable sitemap: https://homeglazer.com/sitemap
+- Home: https://www.homeglazer.com/
+- About: https://www.homeglazer.com/about
+- Contact: https://www.homeglazer.com/contact
+- Enquiry: https://www.homeglazer.com/enquiry
+- FAQ: https://www.homeglazer.com/faq
+- Testimonials: https://www.homeglazer.com/testimonials
+- Gallery: https://www.homeglazer.com/gallery
+- Human-readable sitemap: https://www.homeglazer.com/sitemap
 
 ## Painting services
-- Hub: https://homeglazer.com/services/painting
-- Residential: https://homeglazer.com/services/painting/residential
-- Commercial: https://homeglazer.com/services/painting/commercial
-- Kids room: https://homeglazer.com/services/painting/kids-room
+- Hub: https://www.homeglazer.com/services/painting
+- Residential: https://www.homeglazer.com/services/painting/residential
+- Commercial: https://www.homeglazer.com/services/painting/commercial
+- Kids room: https://www.homeglazer.com/services/painting/kids-room
 
 ## Customized painting
-- Hub: https://homeglazer.com/services/customized-painting
-- Interior: https://homeglazer.com/services/customized-painting/interior-painting
-- Exterior: https://homeglazer.com/services/customized-painting/exterior-painting
-- One day painting: https://homeglazer.com/services/customized-painting/one-day-painting
-- Per day painting: https://homeglazer.com/services/customized-painting/per-day-painting
+- Hub: https://www.homeglazer.com/services/customized-painting
+- Interior: https://www.homeglazer.com/services/customized-painting/interior-painting
+- Exterior: https://www.homeglazer.com/services/customized-painting/exterior-painting
+- One day painting: https://www.homeglazer.com/services/customized-painting/one-day-painting
+- Per day painting: https://www.homeglazer.com/services/customized-painting/per-day-painting
 
 ## Wall decor
-- Hub: https://homeglazer.com/services/wall-decor
-- Graffiti: https://homeglazer.com/services/wall-decor/graffiti-painting
-- Stencil art: https://homeglazer.com/services/wall-decor/stencil-art
-- Texture: https://homeglazer.com/services/wall-decor/texture-painting
-- Wallpaper: https://homeglazer.com/services/wall-decor/wallpaper
+- Hub: https://www.homeglazer.com/services/wall-decor
+- Graffiti: https://www.homeglazer.com/services/wall-decor/graffiti-painting
+- Stencil art: https://www.homeglazer.com/services/wall-decor/stencil-art
+- Texture: https://www.homeglazer.com/services/wall-decor/texture-painting
+- Wallpaper: https://www.homeglazer.com/services/wall-decor/wallpaper
 
 ## Wood services
-- Hub: https://homeglazer.com/services/wood-services
-- Carpentry: https://homeglazer.com/services/wood/carpentry
-- Wood coating: https://homeglazer.com/services/wood/wood-coating
-- Wood polishing: https://homeglazer.com/services/wood/wood-polishing
+- Hub: https://www.homeglazer.com/services/wood-services
+- Carpentry: https://www.homeglazer.com/services/wood/carpentry
+- Wood coating: https://www.homeglazer.com/services/wood/wood-coating
+- Wood polishing: https://www.homeglazer.com/services/wood/wood-polishing
 
 ## Products & tools
-- Product catalog: https://homeglazer.com/products
-- Paint budget calculator: https://homeglazer.com/paint-budget-calculator
-- Painting calculator: https://homeglazer.com/calculator/painting
-- Wood polishing calculator: https://homeglazer.com/calculator/wood-polishing
+- Product catalog: https://www.homeglazer.com/products
+- Paint budget calculator: https://www.homeglazer.com/paint-budget-calculator
+- Painting calculator: https://www.homeglazer.com/calculator/painting
+- Wood polishing calculator: https://www.homeglazer.com/calculator/wood-polishing
 
 ## Colour visualiser
-- Entry: https://homeglazer.com/colour-visualiser
-- Basic flow: https://homeglazer.com/colour-visualiser/basic
-- Advanced: https://homeglazer.com/colour-visualiser/advanced
+- Entry: https://www.homeglazer.com/colour-visualiser
+- Basic flow: https://www.homeglazer.com/colour-visualiser/basic
+- Advanced: https://www.homeglazer.com/colour-visualiser/advanced
 
 ## Blog & trust
-- Blog: https://homeglazer.com/blog
-- Privacy: https://homeglazer.com/privacy-policy
-- Cookies: https://homeglazer.com/cookie-policy
-- Terms: https://homeglazer.com/terms-and-condition
+- Blog: https://www.homeglazer.com/blog
+- Privacy: https://www.homeglazer.com/privacy-policy
+- Cookies: https://www.homeglazer.com/cookie-policy
+- Terms: https://www.homeglazer.com/terms-and-condition
 
 ## Machine-readable discovery
-- Sitemap index: https://homeglazer.com/sitemap-index.xml
-- Main sitemap: https://homeglazer.com/sitemap.xml
+- Sitemap index: https://www.homeglazer.com/sitemap-index.xml
+- Main sitemap: https://www.homeglazer.com/sitemap.xml
 
 ## Not for crawlers (see robots.txt)
-Admin, API, and internal demo routes are disallowed in https://homeglazer.com/robots.txt
+Admin, API, and internal demo routes are disallowed in https://www.homeglazer.com/robots.txt

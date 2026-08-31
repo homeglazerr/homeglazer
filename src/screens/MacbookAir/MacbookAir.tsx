@@ -124,7 +124,7 @@ export const MacbookAir = (): JSX.Element => {
                 <NavigationMenuList className="flex items-center gap-[70px]">
                   {navItems.map((item, index) => (
                     <NavigationMenuItem key={index}>
-                      <div className="font-['Quicksand',Helvetica] font-medium text-[var(--brand-pink)] text-lg text-center">
+                      <div style={{ fontWeight: 400 }} className="font-['Quicksand',Helvetica] font-normal text-[var(--brand-pink)] text-lg text-center">
                         {item}
                       </div>
                     </NavigationMenuItem>
