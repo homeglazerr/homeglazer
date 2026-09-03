@@ -29,6 +29,8 @@ const NavItem: React.FC<NavItemProps> = ({
   children,
   isActive
 }) => {
+  const textStyles = "text-gray-800 hover:text-[#ED276E] hover:bg-gray-100/60";
+
   if (hasDropdown) {
     return (
       <NavigationMenu>
@@ -37,7 +39,8 @@ const NavItem: React.FC<NavItemProps> = ({
             <NavigationMenuTrigger
               style={{ fontWeight: 400 }}
               className={cn(
-                "bg-transparent hover:bg-gray-100/60 text-[15px] font-normal py-2 px-3.5 rounded-full transition-all duration-200 text-gray-800 hover:text-[#ED276E]",
+                "bg-transparent text-[15px] font-normal py-2 px-3.5 rounded-full transition-all duration-200",
+                textStyles,
                 isActive ? "text-[#ED276E] font-medium" : ""
               )}
             >
@@ -59,7 +62,8 @@ const NavItem: React.FC<NavItemProps> = ({
       href={path}
       style={{ fontWeight: 400 }}
       className={cn(
-        "bg-transparent hover:bg-gray-100/60 min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-[15px] font-normal flex items-center text-gray-800 hover:text-[#ED276E]",
+        "bg-transparent min-h-[38px] gap-2 whitespace-nowrap px-3.5 py-2 rounded-full transition-all duration-200 text-[15px] font-normal flex items-center",
+        textStyles,
         isActive ? "text-[#ED276E] font-medium" : ""
       )}
       onClick={onClick}
@@ -98,7 +102,8 @@ ListItem.displayName = "ListItem";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -114,12 +119,29 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+
+      if (isMenuOpen) {
+        setIsVisible(true);
+        return;
+      }
+
+      if (currentScrollY <= 20) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        // Scrolling down -> hide navbar
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up -> show navbar
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY, isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -188,16 +210,12 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <div className={cn(
-      "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-out",
-      "w-[94%] sm:w-[92%] lg:w-max lg:max-w-[95vw] mx-auto mt-3 sm:mt-2 lg:mt-3.5",
-      "bg-white/85 backdrop-blur-xl",
-      "border border-gray-200/80",
-      "shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
-      "rounded-full",
-      isScrolled ? "bg-white/95 backdrop-blur-2xl shadow-[0_12px_36px_rgba(0,0,0,0.12)] border-gray-300/80" : ""
+    <header className={cn(
+      "fixed top-0 inset-x-0 w-full z-50 transition-transform duration-300 ease-in-out",
+      "bg-white/95 backdrop-blur-xl border-b border-gray-200/80 shadow-sm",
+      isVisible ? "translate-y-0" : "-translate-y-full"
     )}>
-      <div className="flex flex-nowrap items-center gap-3 justify-between lg:justify-center lg:gap-6 px-5 py-2 lg:px-7 lg:py-2.5 w-auto">
+      <div className="max-w-7xl mx-auto flex flex-nowrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3">
         <Link href="/" className="group flex-shrink-0 flex items-center gap-2">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/ebe74153cda349e3ba80a6039bb1465f/e26e09b75bb9c4ab63f78d15296ed43e8713cb0b?placeholderIfAbsent=true"
@@ -208,7 +226,7 @@ const Header: React.FC = () => {
 
         {/* Burger menu for mobile/tablet */}
         <button
-          className="lg:hidden p-2 rounded-full bg-gray-100/80 hover:bg-gray-200 transition-all duration-200 text-gray-800"
+          className="lg:hidden p-2 rounded-full transition-all duration-200 bg-gray-100/80 hover:bg-gray-200 text-gray-800"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -229,11 +247,11 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-        {/* Phone number - NO background, clean text & icon */}
+        {/* Phone number */}
         <a
           href="tel:+919717256514"
           style={{ fontWeight: 400 }}
-          className="hidden lg:flex items-center gap-2 text-[15px] font-normal text-gray-800 hover:text-[#ED276E] transition-colors flex-shrink-0 pl-2"
+          className="hidden lg:flex items-center gap-2 text-[15px] font-normal transition-colors flex-shrink-0 pl-2 text-gray-800 hover:text-[#ED276E]"
           aria-label="Call us"
         >
           <Phone size={16} className="text-[#ED276E]" /> +91 97172 56514
@@ -242,7 +260,7 @@ const Header: React.FC = () => {
 
       {/* Mobile menu overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99999] top-[75px] lg:hidden transition-all duration-300">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99999] top-[64px] lg:hidden transition-all duration-300">
           <div className="bg-white border border-gray-200 rounded-3xl mx-4 mt-3 shadow-2xl max-h-[75vh] overflow-hidden">
             <div className="h-full overflow-y-auto p-5 space-y-3">
               <nav className="flex flex-col gap-2">
@@ -301,7 +319,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

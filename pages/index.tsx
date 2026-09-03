@@ -49,7 +49,7 @@ export default function Home() {
           FAQ_PAGE_JSON_LD(faqItems.slice(0, 5)),
         ]}
       />
-      <div className="bg-white flex flex-col overflow-hidden items-center">
+      <div className="bg-white flex flex-col overflow-hidden items-center pt-[64px] sm:pt-[68px]">
       <Header />
       <Hero />
       <Services />

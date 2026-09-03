@@ -23,9 +23,9 @@ const TWELVE_MONTHS_MS = 1000 * 60 * 60 * 24 * 365;
 
 const defaultPreferences: ConsentPreferences = {
   essential: true,
-  analytics: false,
+  analytics: true,
   marketing: false,
-  functional: false,
+  functional: true,
 };
 
 const normalizePreferences = (prefs?: Partial<ConsentPreferences>): ConsentPreferences => ({
